@@ -1410,3 +1410,49 @@ html.loading .wpill{opacity:0;pointer-events:none}
 .wp-ok.done{color:var(--ink)}
 @media (max-width:600px){.wpill{right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px))}.wp-drop{width:56px;height:56px}}
 @media (prefers-reduced-motion:reduce){.wp-drop,.wp-ring{animation:none}}
+
+/* ================= V16: build your water ================= */
+.bw{--bw:#29AAE2;position:relative;background:radial-gradient(45% 60% at 28% 55%,color-mix(in srgb,var(--bw) 16%,transparent),transparent 70%),linear-gradient(180deg,var(--bg),var(--mist));transition:background .8s;overflow:hidden}
+:root[data-theme="dark"] .bw{background:radial-gradient(45% 60% at 28% 55%,color-mix(in srgb,var(--bw) 22%,transparent),transparent 70%),linear-gradient(180deg,var(--bg),#071426)}
+.bw-grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:clamp(28px,6vw,96px);align-items:center}
+.bw-grid>*{min-width:0}
+.bw-glass{position:relative;width:min(100%,400px);justify-self:center;aspect-ratio:360/500}
+.bw-glass::before{content:"";position:absolute;left:8%;right:8%;bottom:-2%;height:16%;border-radius:50%;background:radial-gradient(color-mix(in srgb,var(--bw) 40%,transparent),transparent 70%);filter:blur(16px);transition:background .8s}
+.bw-glass canvas,.bw-svg{position:absolute;inset:0;width:100%;height:100%}
+.bw-svg{pointer-events:none}
+.bw-led{fill:var(--bw);transition:fill .6s}
+.bw-chip{position:absolute;right:-4%;top:40%;display:flex;align-items:baseline;gap:4px;padding:10px 14px;border-radius:16px;background:color-mix(in srgb,var(--surface) 86%,transparent);border:1px solid var(--line);box-shadow:0 20px 40px -24px rgba(6,26,51,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:bob 6s ease-in-out infinite}
+.bw-chip b{font-family:var(--f-serif);font-size:1.7rem;font-weight:600;color:var(--bw);transition:color .6s;font-variant-numeric:tabular-nums}
+.bw-chip small{font-family:var(--f-mono);font-size:.62rem;letter-spacing:.14em;color:var(--muted)}
+.bw-read{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.bw-n{font-family:var(--f-serif);font-weight:500;font-size:clamp(4.4rem,9vw,7.6rem);line-height:.85;letter-spacing:-.03em;color:var(--bw);transition:color .6s;font-variant-numeric:tabular-nums;min-width:3.2ch}
+.bw-u{font-family:var(--f-mono);font-size:.78rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.bw-name{margin-left:auto;align-self:center;font-family:var(--f-mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;padding:7px 12px;border-radius:999px;border:1px solid color-mix(in srgb,var(--bw) 40%,var(--line));color:var(--ink);transition:border-color .6s}
+.bw-copy{margin-top:22px;min-height:190px;transition:opacity .18s,transform .3s var(--ease)}
+.bw-copy.swap{opacity:0;transform:translateY(8px)}
+.bw-use{font-family:var(--f-serif);font-weight:500;font-size:clamp(2rem,3.8vw,3.2rem);line-height:1.02;letter-spacing:-.01em}
+.bw-use em{font-style:italic;color:var(--bw);transition:color .6s}
+.bw-desc{color:var(--muted);font-size:1.05rem;margin-top:14px;max-width:46ch}
+.bw-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.bw-tags span{font-size:.8rem;font-weight:600;padding:7px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line)}
+.bw-tags .yes{background:color-mix(in srgb,#2FB36E 14%,var(--surface));border-color:color-mix(in srgb,#2FB36E 45%,var(--line));color:color-mix(in srgb,#1E7F4E 85%,var(--ink))}
+.bw-tags .yes::before{content:"✓ "}
+.bw-tags .no{background:color-mix(in srgb,#E5483B 10%,var(--surface));border-color:color-mix(in srgb,#E5483B 40%,var(--line));color:color-mix(in srgb,#B23328 85%,var(--ink))}
+:root[data-theme="dark"] .bw-tags .yes{color:#7FE0AE}:root[data-theme="dark"] .bw-tags .no{color:#FF9A90}
+/* slider */
+.bw-slider{position:relative;margin-top:34px;padding-bottom:46px}
+.bw-slider input{-webkit-appearance:none;appearance:none;width:100%;height:12px;border-radius:999px;background:linear-gradient(90deg,#F09A3A 0%,#ECB440 9%,#2FB36E 25%,#25AC9B 50%,#29AAE2 58%,#2E7FDE 67%,#4E4BD8 100%);outline:none;cursor:pointer;margin:0;box-shadow:inset 0 1px 3px rgba(6,26,51,.2)}
+.bw-slider input::-webkit-slider-thumb{-webkit-appearance:none;width:34px;height:40px;border:0;background:radial-gradient(circle at 35% 30%,#fff 0 18%,var(--bw) 70%);border-radius:50% 50% 50% 50%/58% 58% 42% 42%;box-shadow:0 0 0 4px #fff,0 10px 24px -6px rgba(6,26,51,.5);cursor:grab;margin-top:-2px;transition:transform .2s var(--ease)}
+.bw-slider input:active::-webkit-slider-thumb{cursor:grabbing;transform:scale(1.1)}
+.bw-slider input::-moz-range-thumb{width:32px;height:38px;border:0;background:radial-gradient(circle at 35% 30%,#fff 0 18%,var(--bw) 70%);border-radius:50% 50% 50% 50%/58% 58% 42% 42%;box-shadow:0 0 0 4px #fff,0 10px 24px -6px rgba(6,26,51,.5);cursor:grab}
+.bw-slider input:focus-visible{outline:2px solid var(--accent);outline-offset:8px}
+.bw-ticks{position:absolute;left:17px;right:17px;top:26px;height:30px}
+.bw-ticks button{position:absolute;translate:-50% 0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:2px 4px;border:0;background:none;cursor:pointer;color:var(--muted);font:500 .8rem var(--f-mono);transition:color .3s}
+.bw-ticks i{width:2px;height:8px;border-radius:2px;background:var(--line)}
+.bw-ticks button.on{color:var(--ink);font-weight:700}
+.bw-ticks button.on i{background:var(--bw);height:10px}
+.bw-meter{display:flex;align-items:center;gap:14px;margin:6px 0 30px;font-family:var(--f-mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.bw-bar{flex:1;height:4px;border-radius:4px;background:var(--line);overflow:hidden}
+.bw-bar b{display:block;height:100%;background:var(--bw);transform-origin:0 50%;transition:transform .8s var(--ease),background .6s}
+@media (max-width:900px){.bw-grid{grid-template-columns:1fr}.bw-glass{width:min(76%,320px)}.bw-chip{right:-10%}.bw-copy{min-height:0}.bw-ticks span{font-size:.6rem}}
+@media (max-width:480px){.bw-ticks button:nth-child(2) span,.bw-ticks button:nth-child(5) span{display:none}.bw-ticks button{font-size:.68rem}}

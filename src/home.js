@@ -170,4 +170,79 @@
     addEventListener('load',function(){build();kick()});
     document.addEventListener('visibilitychange',function(){if(!document.hidden)kick()});
   })();
+
+  /* ---------- build your water: the signature glass ---------- */
+  (function(){
+    var G=$('bwGlass');if(!G)return;
+    var S=[
+      {ph:5.5,name:'Acidic 2',c:[240,154,58],use:'This is your <em>hair rinse.</em>',d:'Mildly acidic water for a final rinse after shampoo, especially in hard-water cities.',t:['Skin & hair','Not for drinking'],h:.06,bl:'Gentle'},
+      {ph:6.0,name:'Acidic 1',c:[236,180,64],use:'This is your <em>face-wash glass.</em>',d:'Soft, mildly acidic water for washing your face morning and night.',t:['Skin care','Not for drinking'],h:.1,bl:'Gentle'},
+      {ph:7.0,name:'Purified',c:[47,179,110],use:'This is <em>baby\'s bottle.</em>',d:'Filtered, neutral water with no ionization. Use it for baby formula and for taking medicines.',t:['Drink','Baby formula','Medicines'],h:.16,bl:'None'},
+      {ph:8.5,name:'Alkaline 1',c:[37,172,155],use:'This is your <em>first-week glass.</em>',d:'The gentlest alkaline level. Start here for your first two weeks, and use it for pets too.',t:['Drink','Start here','Pets'],h:.45,bl:'Light'},
+      {ph:9.0,name:'Alkaline 2',c:[41,170,226],use:'This is your <em>morning glass.</em>',d:'Smooth, light water for the first glass of the day, and for tea and coffee.',t:['Drink','Tea & coffee'],h:.66,bl:'Medium'},
+      {ph:9.5,name:'Alkaline 3',c:[46,127,222],use:'This is your <em>everyday glass.</em>',d:'Your all-day drinking water, after a walk and with meals, and for cooking dal and rice.',t:['Drink','Cooking'],h:.82,bl:'Strong'},
+      {ph:11.5,name:'Turbo',c:[78,75,216],use:'This is your <em>vegetable wash.</em>',d:'Strong alkaline water for soaking fruit and vegetables before you cook. Never drink it.',t:['Washing produce','Not for drinking'],h:1,bl:'Maximum'}
+    ];
+    var R=$('bwR'),N=$('bwN'),NM=$('bwName'),U=$('bwUse'),D=$('bwDesc'),TG=$('bwTags'),CP=$('bwCopy'),BAR=$('bwBar'),BL=$('bwBarL'),CN=$('bwChipN'),sec=$('build');
+    var MIN=5.5,MAX=11.5;function pct(v){return (v-MIN)/(MAX-MIN)*100}
+    $('bwTicks').innerHTML=S.map(function(o,i){return '<button style="left:'+pct(o.ph)+'%" data-i="'+i+'" aria-label="pH '+o.ph.toFixed(1)+', '+o.name+'"><i></i><span>'+o.ph.toFixed(1)+'</span></button>'}).join('');
+    var ticks=[].slice.call($('bwTicks').children);
+    function nearest(v){var b=0;S.forEach(function(o,i){if(Math.abs(o.ph-v)<Math.abs(S[b].ph-v))b=i});return b}
+    var idx=-1,col=S[4].c.slice(),hz=S[4].h,phShown=9,phT=9;
+    function choose(i,instant){if(i===idx)return;idx=i;var o=S[i];
+      ticks.forEach(function(t,j){t.classList.toggle('on',j===i)});
+      R.setAttribute('aria-valuetext','pH '+o.ph.toFixed(1)+', '+o.name+'. '+o.use.replace(/<[^>]+>/g,''));
+      NM.textContent=o.name;phT=o.ph;BAR.style.transform='scaleX('+Math.max(.04,o.h)+')';BL.textContent=o.bl;
+      sec.style.setProperty('--bw','rgb('+o.c.join(',')+')');
+      function txt(){U.innerHTML=o.use;D.textContent=o.d;TG.innerHTML=o.t.map(function(x){return '<span class="'+(/Not for/.test(x)?'no':/Drink/.test(x)?'yes':'')+'">'+x+'</span>'}).join('')}
+      if(instant||still){txt();return}
+      CP.classList.add('swap');setTimeout(function(){txt();CP.classList.remove('swap')},180)}
+    /* canvas glass */
+    var cv=$('bwc'),cx=cv.getContext('2d'),W,H,k,dprB=Math.min(devicePixelRatio||1,2);
+    function size(){var r=G.getBoundingClientRect();W=r.width;H=r.width*500/360;cv.width=W*dprB;cv.height=H*dprB;k=W/360;cx.setTransform(dprB*k,0,0,dprB*k,0,0)}
+    var TOP=134,BOT=482,level=still?.82:0,levelT=.82,pour=0,pourT=0,amp=0,lastIn=0,B=[],drops=[],tt=0,vis=false,raf=0,last=0;
+    function xl(y){return 63+(y-134)*(85-63)/(482-134)}function xr(y){return 297-(y-134)*(297-275)/(482-134)}
+    function interior(){cx.beginPath();cx.moveTo(63,134);cx.lineTo(297,134);cx.lineTo(276,470);cx.quadraticCurveTo(275,482,262,482);cx.lineTo(98,482);cx.quadraticCurveTo(85,482,84,470);cx.closePath()}
+    function rgba(c,a){return 'rgba('+Math.round(c[0])+','+Math.round(c[1])+','+Math.round(c[2])+','+a+')'}
+    function draw(dt){tt+=dt;cx.clearRect(0,0,360,500);
+      var tc=S[idx].c;for(var q=0;q<3;q++)col[q]+=(tc[q]-col[q])*Math.min(1,dt*3.2);hz+=(S[idx].h-hz)*Math.min(1,dt*2.5);
+      level+=(levelT-level)*Math.min(1,dt*(pour>.2?1.6:3));pour+=(pourT-pour)*Math.min(1,dt*6);amp+=((pour>.1?5:1.2)-amp)*Math.min(1,dt*3);
+      if(performance.now()-lastIn>650)pourT=0;
+      phShown+=(phT-phShown)*Math.min(1,dt*8);var pv=phShown.toFixed(1);if(N.textContent!==pv){N.textContent=pv;CN.textContent=pv}
+      var sy=BOT-level*(BOT-150);
+      /* stream from the spout */
+      if(pour>.02&&level>0){var w=7*pour;var g=cx.createLinearGradient(0,73,0,sy);g.addColorStop(0,rgba(col,.55*pour+.1));g.addColorStop(1,rgba(col,.75*pour));
+        cx.beginPath();cx.moveTo(196-w/2,72);for(var y=72;y<=sy;y+=8){cx.lineTo(196-w/2+Math.sin(y*.09-tt*14)*1.2*pour,y)}for(var y2=sy;y2>=72;y2-=8){cx.lineTo(196+w/2+Math.sin(y2*.09-tt*14+1)*1.2*pour,y2)}cx.closePath();cx.fillStyle=g;cx.fill();
+        cx.fillStyle='rgba(255,255,255,'+(.5*pour)+')';cx.fillRect(195-w*.15,72,1.4,Math.max(0,sy-72));
+        if(Math.random()<pour*.8)drops.push({x:196,y:sy,vx:(Math.random()-.5)*90,vy:-60-Math.random()*90,l:1})}
+      cx.save();interior();cx.clip();
+      if(level>.003){
+        /* water body */
+        cx.beginPath();cx.moveTo(40,sy);for(var x=40;x<=320;x+=6){cx.lineTo(x,sy+Math.sin(x*.05+tt*3.2)*amp*.6+Math.sin(x*.11-tt*4.6)*amp*.35)}cx.lineTo(320,500);cx.lineTo(40,500);cx.closePath();
+        var wg=cx.createLinearGradient(0,sy,0,BOT);wg.addColorStop(0,rgba(col,.32));wg.addColorStop(.5,rgba(col,.52));wg.addColorStop(1,rgba(col,.78));cx.fillStyle=wg;cx.fill();
+        /* light through the water */
+        var lg=cx.createLinearGradient(63,0,297,0);lg.addColorStop(0,'rgba(255,255,255,.28)');lg.addColorStop(.3,'rgba(255,255,255,0)');lg.addColorStop(.75,'rgba(255,255,255,0)');lg.addColorStop(1,'rgba(255,255,255,.18)');cx.fillStyle=lg;cx.fill();
+        /* meniscus */
+        cx.beginPath();for(var x2=40;x2<=320;x2+=6){var yy=sy+Math.sin(x2*.05+tt*3.2)*amp*.6+Math.sin(x2*.11-tt*4.6)*amp*.35;if(x2===40)cx.moveTo(x2,yy);else cx.lineTo(x2,yy)}cx.strokeStyle='rgba(255,255,255,.75)';cx.lineWidth=2;cx.stroke();
+        /* hydrogen bubbles: more and faster as the setting rises */
+        var rate=(4+hz*70)*(still?0:1);if(Math.random()<rate*dt)B.push({x:xl(BOT)+12+Math.random()*(xr(BOT)-xl(BOT)-24),y:BOT-4,r:.8+Math.random()*(1.2+hz*2.2),v:18+hz*90+Math.random()*30,w:Math.random()*6})}
+      for(var i=B.length-1;i>=0;i--){var b=B[i];b.y-=b.v*dt*(.7+hz*.6);b.w+=dt*4;b.x+=Math.sin(b.w)*.25;if(b.y<sy+2||level<.02){B.splice(i,1);continue}
+        cx.beginPath();cx.arc(b.x,b.y,b.r,0,6.283);cx.strokeStyle='rgba(255,255,255,.85)';cx.lineWidth=.9;cx.stroke();cx.fillStyle='rgba(255,255,255,.18)';cx.fill()}
+      if(B.length>220)B.splice(0,B.length-220);
+      cx.restore();
+      for(var d=drops.length-1;d>=0;d--){var p=drops[d];p.vy+=420*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.l-=dt*2.2;if(p.l<=0||p.y>sy+4&&p.vy>0){drops.splice(d,1);continue}cx.globalAlpha=Math.max(0,p.l);cx.fillStyle=rgba(col,.8);cx.beginPath();cx.arc(p.x,p.y,1.6,0,6.283);cx.fill()}
+      cx.globalAlpha=1}
+    function loop(now){raf=0;if(!vis)return;var dt=Math.min(.05,(now-last)/1000||.016);last=now;draw(dt);raf=requestAnimationFrame(loop)}
+    function kick(){if(!raf&&vis){last=performance.now();raf=requestAnimationFrame(loop)}}
+    function pourNow(){lastIn=performance.now();pourT=1;levelT=Math.min(.86,levelT+.02);setTimeout(function(){levelT=.82},500);kick()}
+    R.addEventListener('input',function(){choose(nearest(+R.value));pourNow()});
+    R.addEventListener('change',function(){R.value=S[idx].ph;pourNow()});
+    ticks.forEach(function(t){t.addEventListener('click',function(){var i=+t.dataset.i;R.value=S[i].ph;choose(i);pourNow()})});
+    size();addEventListener('resize',function(){size();if(still)draw(0)});
+    choose(4,true);
+    if(still){level=.82;draw(0);return}
+    var filled=false;
+    if('IntersectionObserver' in window){new IntersectionObserver(function(e){vis=e[0].isIntersecting;if(vis){if(!filled){filled=true;level=0;levelT=.82;pourT=1;lastIn=performance.now()+900}kick()}},{threshold:.25}).observe(G)}
+    else{level=.82;vis=true;kick()}
+  })();
 })();
