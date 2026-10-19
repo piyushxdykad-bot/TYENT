@@ -34,7 +34,7 @@
       '<h2 class="h2" id="'+f.id+'-h" style="font-size:clamp(2.6rem,5.4vw,4.6rem)">'+f.name+'</h2><p style="font-family:var(--f-display);font-size:1.4rem;letter-spacing:-.02em;margin-top:10px">'+f.head+'</p>'+
       '<p class="body">'+f.d+'</p>'+fin+
       '<dl class="spec">'+f.spec.map(function(s){return '<dt>'+s[0]+'</dt><dd>'+s[1]+'</dd>'}).join('')+'</dl>'+
-      '<div style="display:flex;gap:12px;margin-top:28px;flex-wrap:wrap"><a class="btn btn-p" href="contact.html#enquire">Get price &amp; demo <span class="arr">→</span></a><a class="btn btn-g" href="why-tyent.html">Why Tyent</a></div></div>'+
+      '<div class="buy" data-prod="'+f.id+'"></div><a class="buy-demo" href="contact.html#enquire">Or book a free home demo first →</a></div>'+
       '</div></section>';
   }).join('');
 

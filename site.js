@@ -363,10 +363,132 @@
   document.addEventListener('click',function(e){if(el.classList.contains('open')&&!el.contains(e.target))open(false)});
   el.querySelectorAll('.wp-opt[data-mode]').forEach(function(b){b.addEventListener('click',function(){mode=b.dataset.mode;fh.textContent=mode==='wa'?'We\'ll message you on WhatsApp':'We\'ll call you back';opts.hidden=true;form.hidden=false;el.querySelector('#wp-nm').focus()})});
   el.querySelector('.wp-back').addEventListener('click',reset);
+  addEventListener('tyent:call',function(e){var ctx=e.detail||'';setTimeout(function(){openCall(ctx)},0)});
+  function openCall(ctx){open(true);el.classList.add('seen');mode='cb';fh.textContent=ctx?'Call to order · '+ctx:'We\'ll call you back';opts.hidden=true;form.hidden=false;ok.textContent='';ok.classList.remove('done');setTimeout(function(){el.querySelector('#wp-nm').focus()},350)}
   form.addEventListener('submit',function(e){e.preventDefault();var nm=el.querySelector('#wp-nm').value.trim(),mob=el.querySelector('#wp-mob').value.replace(/\D/g,'');
     if(!nm||mob.length<10){ok.classList.remove('done');ok.textContent='Add your name and a 10-digit mobile number.';return}
     ok.classList.add('done');ok.textContent='Thanks, '+nm.split(' ')[0].replace(/</g,'')+'. '+(mode==='wa'?'On the live site the Tyent team will message you on WhatsApp shortly.':'On the live site the Tyent team will call you back shortly.')});
   /* a gentle nudge once per visit */
   var nudged=false;try{nudged=!!sessionStorage.getItem('tyent-tip')}catch(e){}
   if(!nudged&&!still)setTimeout(function(){if(el.classList.contains('open')||el.classList.contains('seen'))return;el.classList.add('tip');try{sessionStorage.setItem('tyent-tip','1')}catch(e){}setTimeout(function(){el.classList.remove('tip')},4200)},9000);
+})();
+
+
+/* ===== V17: shop. Prices, add to basket, call to order, slide-in basket, order request ===== */
+(function(){
+  /* PRICES in rupees. null shows "Price on request" (our team confirms it when the order comes in). */
+  var CATALOG={
+    ace:{name:'ACE-13',img:'ace',price:null,tag:'Countertop · 13 plates'},
+    hybrid:{name:'H2-Hybrid',img:'hybrid',price:367000,tag:'Countertop · hydrogen'},
+    uce:{name:'UCE-13 Plus',img:'uce-set2',price:null,tag:'Under-counter · 13 plates',vlabel:'Finish',variants:[['Satin Silver',null],['Matte Black',null],['Gold',null],['Antique',null]],finishFromSwatch:true},
+    nmp:{name:'NMP Series',img:'nmp9',tag:'Countertop',vlabel:'Plates',variants:[['NMP-5',168000],['NMP-7',null],['NMP-9',null],['NMP-11',272000]]},
+    q:{name:'Q-Series',img:'q',price:null,tag:'Countertop · eco'},
+    filters:{name:'Replacement filter set',img:'filters',price:null,tag:'Stage 1 + stage 2'},
+    scale:{name:'Tyent Scale Remover',img:'scale',price:null,tag:'For hard water'},
+    soap:{name:'TM-X Beauty Soap',img:'soap',price:null,tag:'Fermentation soap'}
+  };
+  var still=matchMedia('(prefers-reduced-motion: reduce)').matches,KEY='tyent-basket';
+  function $(id){return document.getElementById(id)}
+  function rs(n){return '₹'+Number(n).toLocaleString('en-IN')}
+  function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function priceOf(id,v){var p=CATALOG[id];if(!p)return null;if(p.variants){var hit=p.variants.filter(function(x){return x[0]===v})[0]||p.variants[0];return hit[1]}return p.price}
+  var basket=[];try{basket=JSON.parse(localStorage.getItem(KEY)||'[]')||[]}catch(e){basket=[]}
+  basket=basket.filter(function(i){return CATALOG[i.id]});
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(basket))}catch(e){}}
+  function count(){return basket.reduce(function(a,i){return a+i.q},0)}
+
+  /* static prices anywhere on the site: <span data-price-of="ace"> */
+  document.querySelectorAll('[data-price-of]').forEach(function(el){var id=el.dataset.priceOf,p=CATALOG[id];if(!p)return;
+    if(p.variants){var ps=p.variants.map(function(v){return v[1]}).filter(function(x){return x!=null});el.innerHTML=ps.length?'From <b>'+rs(Math.min.apply(null,ps))+'</b>':'<i>On request</i>'}
+    else el.innerHTML=p.price!=null?'<b>'+rs(p.price)+'</b>':'<i>On request</i>'});
+
+  /* buy blocks: <div class="buy" data-prod="nmp"> */
+  document.querySelectorAll('.buy[data-prod]').forEach(function(b){var id=b.dataset.prod,p=CATALOG[id];if(!p)return;
+    var mini=b.classList.contains('mini'),compact=b.classList.contains('compact'),sel=p.variants?(id==='nmp'?3:0):-1,q=1;
+    var showVariants=p.variants&&!p.finishFromSwatch&&!mini;
+    b.innerHTML='<div class="buy-price"><b class="bp"></b><small class="bs"></small></div>'+
+      (showVariants?'<div class="buy-var" role="group" aria-label="'+p.vlabel+'">'+p.variants.map(function(v,i){return '<button type="button" aria-pressed="'+(i===sel)+'" data-i="'+i+'">'+v[0]+'</button>'}).join('')+'</div>':'')+
+      '<div class="buy-acts">'+(mini||compact?'':'<div class="qty" role="group" aria-label="Quantity"><button type="button" class="qm" aria-label="One fewer">−</button><span class="qn" aria-live="polite">1</span><button type="button" class="qp" aria-label="One more">+</button></div>')+
+      '<button type="button" class="btn btn-p add"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 8h14l-1.2 11.1a2 2 0 0 1-2 1.9H8.2a2 2 0 0 1-2-1.9L5 8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>'+(mini?'Add':'Add to basket')+'</button>'+
+      '<button type="button" class="btn btn-g call"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>'+(mini?'Call':'Call to order')+'</button></div>';
+    var bp=b.querySelector('.bp'),bs=b.querySelector('.bs');
+    function variant(){if(!p.variants)return '';if(p.finishFromSwatch){var sw=b.closest('section')&&b.closest('section').querySelector('.sw[aria-pressed="true"]');return sw?sw.dataset.n:p.variants[0][0]}return p.variants[Math.max(0,sel)][0]}
+    function paint(){var v=variant(),pr=priceOf(id,v);
+      if(mini&&p.variants&&!p.finishFromSwatch){var ps=p.variants.map(function(x){return x[1]}).filter(function(x){return x!=null});bp.textContent=ps.length?'From '+rs(Math.min.apply(null,ps)):'Price on request';bs.textContent=ps.length?'NMP-5 to NMP-11':'We\'ll confirm today\'s price'}
+      else{bp.textContent=pr!=null?rs(pr):'Price on request';bs.textContent=pr!=null?(v?v+' · ':'')+'installation arranged by our team':(v?v+' · ':'')+'our team confirms the price when you order'}
+      b.classList.toggle('req',bp.textContent==='Price on request')}
+    paint();
+    b.querySelectorAll('.buy-var button').forEach(function(x){x.addEventListener('click',function(){sel=+x.dataset.i;b.querySelectorAll('.buy-var button').forEach(function(y){y.setAttribute('aria-pressed',y===x)});paint()})});
+    if(p.finishFromSwatch){var sec=b.closest('section');if(sec)sec.querySelectorAll('.sw').forEach(function(sw){sw.addEventListener('click',function(){setTimeout(paint,0)})})}
+    var qn=b.querySelector('.qn');if(qn){b.querySelector('.qm').addEventListener('click',function(){q=Math.max(1,q-1);qn.textContent=q});b.querySelector('.qp').addEventListener('click',function(){q=Math.min(9,q+1);qn.textContent=q})}
+    b.querySelector('.add').addEventListener('click',function(e){var v=mini&&p.variants&&!p.finishFromSwatch?p.variants[id==='nmp'?3:0][0]:variant();add(id,v,q,b);if(qn){q=1;qn.textContent=1}});
+    b.querySelector('.call').addEventListener('click',function(){var v=variant();dispatchEvent(new CustomEvent('tyent:call',{detail:p.name+(v&&v!==p.name?' ('+v+')':'')}))});
+  });
+
+  /* basket drawer */
+  var dr=document.createElement('div');dr.className='bk';dr.id='basket';dr.hidden=true;
+  dr.innerHTML='<div class="bk-scrim"></div><aside class="bk-panel" role="dialog" aria-modal="true" aria-labelledby="bk-h">'+
+    '<header class="bk-top"><h2 id="bk-h">Your <em>basket</em></h2><span class="bk-c" id="bkC"></span><button class="icon-btn bk-x" aria-label="Close basket">✕</button></header>'+
+    '<div class="bk-body" id="bkBody"></div><footer class="bk-foot" id="bkFoot"></footer></aside>';
+  document.body.appendChild(dr);
+  var body=$('bkBody'),foot=$('bkFoot'),cBtn=$('cartBtn'),cN=$('cartN'),opener=null,view='list';
+  function badge(bump){var n=count();if(cN){cN.textContent=n;cN.hidden=!n}if(cBtn)cBtn.setAttribute('aria-label',n?'Basket, '+n+' item'+(n>1?'s':''):'Basket, empty');
+    if(bump&&cBtn&&!still){cBtn.classList.remove('bump');void cBtn.offsetWidth;cBtn.classList.add('bump')}}
+  function totals(){var sum=0,req=0;basket.forEach(function(i){var pr=priceOf(i.id,i.v);if(pr==null)req+=i.q;else sum+=pr*i.q});return {sum:sum,req:req}}
+  function render(){var n=count();$('bkC').textContent=n?n+' item'+(n>1?'s':''):'';
+    if(view==='done')return;
+    if(!basket.length){view='list';body.innerHTML='<div class="bk-empty"><div class="bk-glass"><span></span></div><h3>Your basket is empty.</h3><p>Pick a machine and we\'ll take care of the water test and installation.</p><a class="btn btn-p" href="products.html">Explore ionizers <span class="arr">→</span></a></div>';foot.innerHTML='';return}
+    if(view==='checkout')return renderCheckout();
+    body.innerHTML='<ul class="bk-list">'+basket.map(function(i,k){var p=CATALOG[i.id],pr=priceOf(i.id,i.v);
+      return '<li class="bk-item"><div class="bk-im"><img src="img/'+p.img+'.webp" alt=""></div><div class="bk-info"><b>'+esc(p.name)+'</b><small>'+esc(i.v&&i.v!==p.name?i.v:p.tag)+'</small>'+
+      '<div class="bk-row"><div class="qty" role="group" aria-label="Quantity of '+esc(p.name)+'"><button type="button" data-k="'+k+'" data-d="-1" aria-label="One fewer">−</button><span>'+i.q+'</span><button type="button" data-k="'+k+'" data-d="1" aria-label="One more">+</button></div>'+
+      '<span class="bk-pr">'+(pr!=null?rs(pr*i.q):'<i>Price on request</i>')+'</span></div></div><button class="bk-rm" data-rm="'+k+'" aria-label="Remove '+esc(p.name)+'">✕</button></li>'}).join('')+'</ul>'+
+      '<div class="bk-perks"><span>✓ Free water test before installation</span><span>✓ Installation arranged by Tyent India</span><span>✓ Genuine filters delivered to your door</span></div>';
+    var t=totals();
+    foot.innerHTML='<div class="bk-sum"><span>Subtotal</span><b>'+(t.sum?rs(t.sum):'—')+'</b></div>'+(t.req?'<p class="bk-note">+ '+t.req+' item'+(t.req>1?'s':'')+' priced on request. Our team confirms the final price on the call.</p>':'<p class="bk-note">Our team calls to confirm the order, payment and installation date.</p>')+
+      '<button class="btn btn-p bk-go">Place order request <span class="arr">→</span></button><button class="btn btn-g bk-call">Call to order instead</button>';
+    foot.querySelector('.bk-go').addEventListener('click',function(){view='checkout';render()});
+    foot.querySelector('.bk-call').addEventListener('click',function(){close();var names=basket.map(function(i){return CATALOG[i.id].name}).join(', ');dispatchEvent(new CustomEvent('tyent:call',{detail:names}))});
+  }
+  function renderCheckout(){var t=totals();
+    body.innerHTML='<button class="bk-back">← Back to basket</button><h3 class="bk-h3">Where should we deliver?</h3><p class="bk-sub">No payment now. Our team calls to confirm the price, payment and installation date.</p>'+
+      '<form class="bk-form" id="bkForm" novalidate><label for="bk-nm">Full name</label><input id="bk-nm" autocomplete="name" placeholder="Ananya Sharma">'+
+      '<label for="bk-mob">Mobile</label><input id="bk-mob" inputmode="tel" autocomplete="tel" placeholder="98765 43210">'+
+      '<label for="bk-city">City</label><input id="bk-city" autocomplete="address-level2" placeholder="Lucknow">'+
+      '<label for="bk-addr">Address <small>(optional)</small></label><textarea id="bk-addr" autocomplete="street-address" placeholder="Flat, building, street, area"></textarea>'+
+      '<fieldset class="bk-pref"><legend>Best way to reach you</legend><input type="radio" name="bkp" id="bkp1" value="call" checked><label for="bkp1">Phone call</label><input type="radio" name="bkp" id="bkp2" value="wa"><label for="bkp2">WhatsApp</label></fieldset>'+
+      '<p class="bk-err" id="bkErr" role="alert"></p></form>';
+    foot.innerHTML='<div class="bk-sum"><span>'+count()+' item'+(count()>1?'s':'')+'</span><b>'+(t.sum?rs(t.sum)+(t.req?' + on request':''):'Price on request')+'</b></div><button class="btn btn-p bk-send" form="bkForm" type="submit">Send order request <span class="arr">→</span></button>';
+    body.querySelector('.bk-back').addEventListener('click',function(){view='list';render()});
+    $('bkForm').addEventListener('submit',function(e){e.preventDefault();var nm=$('bk-nm').value.trim(),mob=$('bk-mob').value.replace(/\D/g,''),city=$('bk-city').value.trim();
+      if(!nm||mob.length<10||!city){$('bkErr').textContent='Add your name, a 10-digit mobile number and your city to continue.';return}
+      var ref='TY-'+Math.floor(100000+Math.random()*900000),items=basket.slice(),by=document.querySelector('input[name=bkp]:checked').value;
+      view='done';basket=[];save();badge();
+      body.innerHTML='<div class="bk-done"><svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#2FB36E"/><path d="M19 33l9 9 17-19" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
+        '<h3>Order request received.</h3><p class="bk-ref">Reference <b>'+ref+'</b></p><p>Thanks, '+esc(nm.split(' ')[0])+'. On the live site this goes straight to the Tyent India team in '+esc(city)+', who will '+(by==='wa'?'message you on WhatsApp':'call you')+' to confirm the price, payment and installation date.</p>'+
+        '<ul class="bk-mini">'+items.map(function(i){return '<li>'+i.q+' × '+esc(CATALOG[i.id].name)+(i.v&&i.v!==CATALOG[i.id].name?' · '+esc(i.v):'')+'</li>'}).join('')+'</ul></div>';
+      foot.innerHTML='<button class="btn btn-g bk-close2">Continue browsing</button>';foot.querySelector('.bk-close2').addEventListener('click',close);$('bkC').textContent='';
+    });
+  }
+  body.addEventListener('click',function(e){var d=e.target.closest('[data-d]'),r=e.target.closest('[data-rm]');
+    if(d){var k=+d.dataset.k;basket[k].q=Math.max(0,Math.min(9,basket[k].q+(+d.dataset.d)));if(!basket[k].q)basket.splice(k,1);save();badge();render()}
+    if(r){var li=r.closest('li');li.classList.add('gone');setTimeout(function(){basket.splice(+r.dataset.rm,1);save();badge();render()},still?0:260)}});
+  function open(){opener=document.activeElement;if(view==='done')view='list';render();dr.hidden=false;requestAnimationFrame(function(){dr.classList.add('in')});document.body.style.overflow='hidden';setTimeout(function(){dr.querySelector('.bk-x').focus()},60)}
+  function close(){dr.classList.remove('in');document.body.style.overflow='';setTimeout(function(){dr.hidden=true;if(view==='done')view='list'},still?0:420);if(opener&&opener.focus)opener.focus()}
+  if(cBtn)cBtn.addEventListener('click',open);
+  dr.querySelector('.bk-x').addEventListener('click',close);dr.querySelector('.bk-scrim').addEventListener('click',close);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!dr.hidden)close()});
+
+  /* add: fly the product image into the basket, bump the badge, show a toast */
+  var toast=document.createElement('div');toast.className='bk-toast';toast.setAttribute('role','status');document.body.appendChild(toast);var tt;
+  function add(id,v,q,fromEl){var hit=basket.filter(function(i){return i.id===id&&i.v===v})[0];if(hit)hit.q=Math.min(9,hit.q+q);else basket.push({id:id,v:v,q:q});save();
+    var p=CATALOG[id],src=fromEl&&(fromEl.closest('section,article,.hx-slide')||document).querySelector('.tt-img,img'),cart=cBtn&&cBtn.getBoundingClientRect();
+    if(src&&cart&&!still){var r=src.getBoundingClientRect(),f=document.createElement('img');f.src='img/'+p.img+'.webp';f.className='bk-fly';var s0=Math.min(r.width,220);
+      f.style.cssText='left:'+(r.left+r.width/2-s0/2)+'px;top:'+(r.top+r.height/2-s0/2)+'px;width:'+s0+'px';document.body.appendChild(f);
+      requestAnimationFrame(function(){requestAnimationFrame(function(){var dx=cart.left+cart.width/2-(r.left+r.width/2),dy=cart.top+cart.height/2-(r.top+r.height/2);f.style.transform='translate('+dx+'px,'+dy+'px) scale(.08) rotate(-12deg)';f.style.opacity='.4'})});
+      setTimeout(function(){f.remove();badge(true)},760)}else badge(true);
+    toast.innerHTML='<img src="img/'+p.img+'.webp" alt=""><span><b>'+esc(p.name)+(v&&v!==p.name?' · '+esc(v):'')+'</b> added to your basket</span><button type="button">View basket</button>';
+    toast.querySelector('button').addEventListener('click',open);toast.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){toast.classList.remove('show')},3600)}
+  badge();
+  window.TyentShop={add:add,open:open,catalog:CATALOG};
 })();

@@ -40,6 +40,7 @@ setTimeout(finish,MAX+800);requestAnimationFrame(step)})();</script>
       <a href="why-tyent.html">Why Tyent</a><a href="why-water-ionizer.html">Why Water Ionizer</a><a href="certifications.html">Certifications</a><a href="blogs.html">Blogs</a><a href="contact.html">Contact Us</a>
     </nav>
     <div class="nav-r">
+      <button class="icon-btn cart-btn" id="cartBtn" aria-label="Basket, empty" aria-haspopup="dialog"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 11.1a2 2 0 0 1-2 1.9H8.2a2 2 0 0 1-2-1.9L5 8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg><span class="cart-n" id="cartN" hidden>0</span></button>
       <button class="icon-btn" id="theme" aria-label="Switch to dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg></button>
       <a class="btn btn-p mag" href="contact.html#enquire">Book a demo <span class="arr">→</span></a>
       <button class="icon-btn burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
@@ -78,17 +79,17 @@ setTimeout(finish,MAX+800);requestAnimationFrame(step)})();</script>
     </div>
     <div class="tbl-wrap rv-auto">
       <table class="tbl">
-        <thead><tr><th scope="col">Model</th><th scope="col">Installation</th><th scope="col">Plates</th><th scope="col">Controls</th><th scope="col">Stand-out feature</th><th scope="col">Best for</th></tr></thead>
+        <thead><tr><th scope="col">Model</th><th scope="col">Price</th><th scope="col">Installation</th><th scope="col">Plates</th><th scope="col">Controls</th><th scope="col">Stand-out feature</th><th scope="col">Best for</th></tr></thead>
         <tbody>
-          <tr class="hl"><th scope="row">ACE-13</th><td>Countertop</td><td>13</td><td>Colour touchscreen, jog dial</td><td>Most plates on the counter</td><td>Families who want the best on show</td></tr>
-          <tr><th scope="row">H2-Hybrid</th><td>Countertop</td><td>Hybrid cell</td><td>Illuminated dial, colour LCD</td><td>Hydrogen water mode</td><td>Hydrogen-rich drinking water</td></tr>
-          <tr><th scope="row">UCE-13 Plus</th><td>Under-counter</td><td>13</td><td>Touchscreen faucet</td><td>Four faucet finishes</td><td>Modular kitchens, clear counters</td></tr>
-          <tr><th scope="row">NMP Series</th><td>Countertop</td><td>5, 7, 9 or 11</td><td>Wide LCD, start button</td><td>Choose your plate count</td><td>Matching size to household</td></tr>
-          <tr><th scope="row">Q-Series</th><td>Countertop</td><td>Ask our team</td><td>Soft-touch panel</td><td>Eco mode</td><td>Simple, energy-saving use</td></tr>
+          <tr class="hl"><th scope="row">ACE-13</th><td><span class="tprice" data-price-of="ace"></span></td><td>Countertop</td><td>13</td><td>Colour touchscreen, jog dial</td><td>Most plates on the counter</td><td>Families who want the best on show</td></tr>
+          <tr><th scope="row">H2-Hybrid</th><td><span class="tprice" data-price-of="hybrid"></span></td><td>Countertop</td><td>Hybrid cell</td><td>Illuminated dial, colour LCD</td><td>Hydrogen water mode</td><td>Hydrogen-rich drinking water</td></tr>
+          <tr><th scope="row">UCE-13 Plus</th><td><span class="tprice" data-price-of="uce"></span></td><td>Under-counter</td><td>13</td><td>Touchscreen faucet</td><td>Four faucet finishes</td><td>Modular kitchens, clear counters</td></tr>
+          <tr><th scope="row">NMP Series</th><td><span class="tprice" data-price-of="nmp"></span></td><td>Countertop</td><td>5, 7, 9 or 11</td><td>Wide LCD, start button</td><td>Choose your plate count</td><td>Matching size to household</td></tr>
+          <tr><th scope="row">Q-Series</th><td><span class="tprice" data-price-of="q"></span></td><td>Countertop</td><td>Ask our team</td><td>Soft-touch panel</td><td>Eco mode</td><td>Simple, energy-saving use</td></tr>
         </tbody>
       </table>
     </div>
-    <p style="font-size:.8rem;color:var(--muted);margin-top:14px">Specifications are indicative and will be confirmed by Tyent India. Ask for current prices during your home demo.</p>
+    <p style="font-size:.8rem;color:var(--muted);margin-top:14px">Specifications are indicative and will be confirmed by Tyent India. Prices shown are in rupees; machines marked "Price on request" are confirmed by our team when you order.</p>
   </div>
 </section>
 
@@ -106,11 +107,11 @@ setTimeout(finish,MAX+800);requestAnimationFrame(step)})();</script>
         <div style="display:flex;flex-direction:column;gap:14px">
           <h3>Two-stage replacement filters</h3>
           <p>Stage 1 carbon and stage 2 ultra-filtration cartridges, matched to your model. Your display tracks litres and reminds you when to change them.</p>
-          <a class="btn btn-g" href="contact.html#enquire" style="align-self:flex-start">Order filters</a>
+          <div class="buy compact" data-prod="filters"></div>
         </div>
       </article>
-      <article class="ccard"><h3>Tyent Scale Remover</h3><p>Guards the plates and pipes against calcium build-up in hard-water cities.</p><div class="im"><img src="img/scale.webp" alt="Tyent Scale Remover unit" width="1000" height="563"></div></article>
-      <article class="ccard"><h3>TM-X Beauty Soap</h3><p>A fermentation soap made to pair with acidic water in your skincare routine.</p><div class="im"><img src="img/soap.webp" alt="TM-X fermentation beauty soap" width="1000" height="706"></div></article>
+      <article class="ccard"><h3>Tyent Scale Remover</h3><p>Guards the plates and pipes against calcium build-up in hard-water cities.</p><div class="buy compact" data-prod="scale"></div><div class="im"><img src="img/scale.webp" alt="Tyent Scale Remover unit" width="1000" height="563"></div></article>
+      <article class="ccard"><h3>TM-X Beauty Soap</h3><p>A fermentation soap made to pair with acidic water in your skincare routine.</p><div class="buy compact" data-prod="soap"></div><div class="im"><img src="img/soap.webp" alt="TM-X fermentation beauty soap" width="1000" height="706"></div></article>
     </div>
   </div>
 </section>
@@ -173,7 +174,7 @@ setTimeout(finish,MAX+800);requestAnimationFrame(step)})();</script>
       '<h2 class="h2" id="'+f.id+'-h" style="font-size:clamp(2.6rem,5.4vw,4.6rem)">'+f.name+'</h2><p style="font-family:var(--f-display);font-size:1.4rem;letter-spacing:-.02em;margin-top:10px">'+f.head+'</p>'+
       '<p class="body">'+f.d+'</p>'+fin+
       '<dl class="spec">'+f.spec.map(function(s){return '<dt>'+s[0]+'</dt><dd>'+s[1]+'</dd>'}).join('')+'</dl>'+
-      '<div style="display:flex;gap:12px;margin-top:28px;flex-wrap:wrap"><a class="btn btn-p" href="contact.html#enquire">Get price &amp; demo <span class="arr">→</span></a><a class="btn btn-g" href="why-tyent.html">Why Tyent</a></div></div>'+
+      '<div class="buy" data-prod="'+f.id+'"></div><a class="buy-demo" href="contact.html#enquire">Or book a free home demo first →</a></div>'+
       '</div></section>';
   }).join('');
 
