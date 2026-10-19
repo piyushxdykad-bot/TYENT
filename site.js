@@ -266,3 +266,23 @@
   }
   addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(frame)}},{passive:true});frame();
 })();
+
+/* ===== V12: footer logo fills with water as you arrive, sloshes toward the cursor ===== */
+(function(){
+  var fm=document.getElementById('fmark');if(!fm)return;
+  var lvl=document.getElementById('fmlevel'),still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var cur=.12,target=.12,ang=0,angT=0,boost=0,running=false,vis=false;
+  function goal(){var r=fm.getBoundingClientRect(),vh=innerHeight,k=(vh-r.top)/(vh*.55+r.height*.6);k=Math.max(0,Math.min(1,k));return .1+.43*(k*k*(3-2*k))}
+  function apply(){var L=660-(cur+boost)*282;lvl.setAttribute('transform','translate(0 '+L.toFixed(2)+') rotate('+ang.toFixed(2)+' 540 0)')}
+  if(still){cur=.5;apply();return}
+  function tick(){cur+=(target-cur)*.06;ang+=(angT-ang)*.08;apply();
+    if(Math.abs(target-cur)>.0008||Math.abs(angT-ang)>.01){requestAnimationFrame(tick)}else running=false}
+  function kick(){if(!running){running=true;requestAnimationFrame(tick)}}
+  if('IntersectionObserver' in window)new IntersectionObserver(function(e){vis=e[0].isIntersecting;if(vis){target=goal();kick()}},{rootMargin:'200px'}).observe(fm);
+  addEventListener('scroll',function(){if(!vis)return;target=goal();kick()},{passive:true});
+  var calm;
+  fm.addEventListener('pointermove',function(e){var r=fm.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5;angT=x*-7;boost=.05;fm.classList.add('stir');fm.style.setProperty('--glow',1);clearTimeout(calm);calm=setTimeout(function(){fm.classList.remove('stir')},700);kick()});
+  fm.addEventListener('pointerleave',function(){angT=0;boost=0;fm.classList.remove('stir');fm.style.setProperty('--glow',.6);kick()});
+  fm.addEventListener('pointerdown',function(){fm.classList.add('stir');boost=.09;kick();setTimeout(function(){boost=.05;kick()},400)});
+  apply();
+})();

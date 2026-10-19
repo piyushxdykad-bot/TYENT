@@ -1186,3 +1186,20 @@ footer .giant.pre{letter-spacing:.12em;opacity:.2}
 .dd.open .dd-panel a:nth-child(2){animation-delay:.04s}.dd.open .dd-panel a:nth-child(3){animation-delay:.08s}.dd.open .dd-panel a:nth-child(4){animation-delay:.12s}.dd.open .dd-panel a:nth-child(5){animation-delay:.16s}.dd.open .dd-panel a:nth-child(6){animation-delay:.2s}.dd.open .dd-panel a:nth-child(7){animation-delay:.24s}
 @keyframes ddIn{from{opacity:0;transform:translateY(8px)}}
 @media (prefers-reduced-motion:reduce){.split.pre .wl>span{transform:none}.zoom.pre{clip-path:none}.draw *{stroke-dashoffset:0!important}footer .giant.pre{letter-spacing:-.06em;opacity:1}.links>*,.logo{animation:none}}
+
+/* ================= V12: water-filled Tyent logo in the footer ================= */
+.fmark{margin-top:64px;position:relative;cursor:default}
+.fmark svg{display:block;width:100%;height:auto;overflow:visible}
+.fmark::after{content:"";position:absolute;left:12%;right:12%;bottom:-6%;height:22%;border-radius:50%;background:radial-gradient(rgba(41,170,226,.28),transparent 70%);filter:blur(18px);opacity:var(--glow,.6);transition:opacity .6s;pointer-events:none}
+.fm-outline path{fill:none;stroke:rgba(142,216,248,.42);stroke-width:1.2;vector-effect:non-scaling-stroke}
+.fm-wave.a{animation:fmA 6s linear infinite}
+.fm-wave.b{animation:fmB 9s linear infinite}
+@keyframes fmA{from{transform:translateX(0)}to{transform:translateX(-186px)}}
+@keyframes fmB{from{transform:translateX(-246px)}to{transform:translateX(0)}}
+.fm-amp{transform-box:fill-box;transform-origin:50% 0;transition:transform .9s cubic-bezier(.3,1.6,.5,1)}
+.fmark.stir .fm-amp{transform:scaleY(2.1)}
+.fm-bub circle{opacity:0;animation:fmBub var(--t,6s) ease-in var(--d,0s) infinite}
+@keyframes fmBub{0%{transform:translateY(0);opacity:0}15%{opacity:.85}85%{opacity:.5}100%{transform:translateY(-70px);opacity:0}}
+.fm-shine{animation:fmShine 5s ease-in-out infinite}
+@keyframes fmShine{50%{opacity:.12}}
+@media (prefers-reduced-motion:reduce){.fm-wave,.fm-bub circle,.fm-shine{animation:none!important}.fm-bub circle{opacity:.5}}
