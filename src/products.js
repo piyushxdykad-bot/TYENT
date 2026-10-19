@@ -29,7 +29,7 @@
     var gal=f.g.slice(0,4).map(function(g,j){return '<button aria-pressed="'+(j===0)+'" data-src="'+g[0]+'" data-cut="'+g[2]+'" aria-label="'+g[1]+'"><img src="img/'+g[0]+'.webp" alt="" loading="lazy"></button>'}).join('');
     var fin=f.fin?'<div class="sws" role="group" aria-label="Faucet finish">'+f.fin.map(function(s,j){return '<button class="sw" aria-pressed="'+(j===0)+'" aria-label="'+s[0]+'" data-n="'+s[0]+'" data-src="'+s[2]+'" style="background:'+s[1]+'"></button>'}).join('')+'<span class="fname">'+f.fin[0][0]+'</span></div>':'';
     return '<section id="'+f.id+'" class="pfam" aria-labelledby="'+f.id+'-h"><div class="wrap two'+flip+'">'+
-      '<div><div class="frame cut gal-wrap" style="aspect-ratio:1.15"><img class="gal-main" src="img/'+f.g[0][0]+'.webp" alt="Tyent '+f.name+', '+f.g[0][1]+'"></div><div class="gal">'+gal+'</div></div>'+
+      '<div><div class="tt" data-fam="'+f.id+'" tabindex="0" role="group" aria-roledescription="turntable" aria-label="Tyent '+f.name+'. Drag, or use the arrow keys, to turn it."><div class="tt-floor" aria-hidden="true"><div class="tt-ring"></div></div><div class="tt-stage"><img class="tt-img" src="img/'+f.g[0][0]+'.webp" alt="Tyent '+f.name+'" draggable="false"><div class="tt-hs"></div></div><img class="tt-photo" alt="" hidden><span class="tt-hint" aria-hidden="true"><i></i>Drag to turn</span><span class="tt-deg" aria-hidden="true">0°</span></div><div class="gal">'+gal+'</div></div>'+
       '<div><div class="fam-top">'+f.tags.map(function(t,j){return '<span class="tagx'+(j===0?' blue':'')+'">'+t+'</span>'}).join('')+'</div>'+
       '<h2 class="h2" id="'+f.id+'-h" style="font-size:clamp(2.6rem,5.4vw,4.6rem)">'+f.name+'</h2><p style="font-family:var(--f-display);font-size:1.4rem;letter-spacing:-.02em;margin-top:10px">'+f.head+'</p>'+
       '<p class="body">'+f.d+'</p>'+fin+
@@ -38,14 +38,52 @@
       '</div></section>';
   }).join('');
 
+  /* ---------- drag-to-turn turntable ---------- */
+  /* views: real camera angles we have for each family (a = the angle that photo faces);
+     hotspots in % of that photo: [x, y, title, detail] */
+  var TT={
+    ace:[{src:'ace-front',a:-10,hs:[[40,23,'Colour touchscreen','Pick any of 7 waters and see the pH before you pour.'],[71,72,'Jog dial','Turn to change setting, press to pour.'],[52,52,'Two filters inside','Carbon and ultra-filtration, behind the front panel.'],[6,55,'Flexible spout','Swings to fill a glass, jug or pot.']]},
+         {src:'ace',a:24,hs:[[31,30,'Colour touchscreen','Pick any of 7 waters and see the pH before you pour.'],[71,81,'Jog dial','Turn to change setting, press to pour.'],[55,58,'Two filters inside','Carbon and ultra-filtration, behind the front panel.'],[4,66,'Flexible spout','Swings to fill a glass, jug or pot.']]}],
+    hybrid:[{src:'hybrid',a:0,hs:[[62,27,'Colour LCD','Shows your water type and pH.'],[13,80,'Hydrogen dial','Switch between ionized and H₂ water.'],[50,60,'Filters inside','Two-stage filtration before the cell.'],[4,66,'Flexible spout','Swings to fill a glass, jug or pot.']]}],
+    uce:[{src:'uce-set',a:-6,hs:[[88,41,'Touchscreen faucet','Choose your water right at the sink.'],[30,28,'Ionizer under the sink','The machine hides in your cabinet.'],[33,64,'Filters inside','Swap them through the front door.'],[86,62,'Separate outlets','Acidic water never mixes with drinking water.']]},
+         {src:'uce-set2',a:20,hs:[[89,38,'Touchscreen faucet','Choose your water right at the sink.'],[32,20,'Ionizer under the sink','The machine hides in your cabinet.'],[30,62,'Filters inside','Swap them through the front door.'],[87,60,'Separate outlets','Acidic water never mixes with drinking water.']]}],
+    nmp:[{src:'nmp9',a:0,hs:[[46,19,'Wide LCD','Your setting and pH at a glance.'],[80,86,'Start button','One press to pour.'],[50,55,'Filters inside','Two-stage filtration before the plates.']]}],
+    q:[{src:'q',a:12,hs:[[37,22,'Colour-coded panel','Each water type has its own colour.'],[80,47,'Eco mode','Saves power between pours.'],[30,62,'Filters inside','Two-stage filtration before the plates.']]}]
+  };
   document.querySelectorAll('.pfam').forEach(function(sec){
-    var main=sec.querySelector('.gal-main');if(!main)return;var wrap=sec.querySelector('.gal-wrap');var name=sec.querySelector('h2').textContent;
-    function show(src,cut,label){main.style.opacity=0;setTimeout(function(){main.src='img/'+src+'.webp';main.alt='Tyent '+name+', '+label;
-      wrap.style.padding=cut?'':'0';main.style.maxWidth=cut?'':'100%';main.style.maxHeight=cut?'':'none';main.style.width=cut?'':'100%';main.style.height=cut?'':'100%';main.style.objectFit=cut?'contain':'cover';main.style.filter=cut?'':'none';main.style.opacity=1},still?0:220)}
+    var tt=sec.querySelector('.tt');if(!tt)return;
+    var V=TT[tt.dataset.fam]||[],stage=tt.querySelector('.tt-stage'),img=tt.querySelector('.tt-img'),hsBox=tt.querySelector('.tt-hs'),ring=tt.querySelector('.tt-ring'),photo=tt.querySelector('.tt-photo'),deg=tt.querySelector('.tt-deg');
+    var name=sec.querySelector('h2').textContent,cur=-1,A=V[0]?V[0].a:0,T=A,drag=null,last=0,idle=true,vis=false,raf=0,t0=performance.now();
+    V.forEach(function(v){var im=new Image();im.src='img/'+v.src+'.webp'});
+    function nearest(a){var b=0;V.forEach(function(v,i){if(Math.abs(v.a-a)<Math.abs(V[b].a-a))b=i});return b}
+    function setView(i){if(i===cur||!V[i])return;cur=i;var v=V[i];
+      img.style.opacity=.15;setTimeout(function(){img.src='img/'+v.src+'.webp';img.style.opacity=1},still?0:120);
+      hsBox.innerHTML=v.hs.map(function(h,k){return '<button class="hs" style="left:'+h[0]+'%;top:'+h[1]+'%" aria-label="'+h[2]+': '+h[3]+'"><span class="hs-dot"></span><span class="hs-card'+(h[0]>60?' l':'')+'"><b>'+h[2]+'</b>'+h[3]+'</span></button>'}).join('')}
+    function render(){var i=nearest(A);setView(i);var tilt=Math.max(-26,Math.min(26,(A-V[i].a)*.9));
+      stage.style.transform='rotateY('+tilt.toFixed(2)+'deg)';ring.style.transform='rotateX(74deg) rotateZ('+(A*5).toFixed(1)+'deg)';
+      tt.classList.toggle('hs-on',Math.abs(tilt)<9&&!drag);deg.textContent=Math.round(A)+'°'}
+    function loop(now){raf=0;if(!vis)return;var dt=Math.min(.05,(now-last)/1000||0);last=now;
+      if(!drag){if(idle&&!still){T=V[nearest(T)].a+Math.sin((now-t0)/1400)*9}A+=(T-A)*Math.min(1,dt*7)}
+      render();raf=requestAnimationFrame(loop)}
+    function kick(){if(!raf&&vis){last=performance.now();raf=requestAnimationFrame(loop)}}
+    if('IntersectionObserver' in window)new IntersectionObserver(function(e){vis=e[0].isIntersecting;if(vis)kick()}).observe(tt);else{vis=true;kick()}
+    var idleT;function wake(){idle=false;tt.classList.add('touched');clearTimeout(idleT);idleT=setTimeout(function(){idle=true;t0=performance.now()},3500)}
+    tt.addEventListener('pointerdown',function(e){if(tt.classList.contains('photo')||e.target.closest('.hs'))return;drag={x:e.clientX,a:A};tt.setPointerCapture(e.pointerId);tt.classList.add('dragging');wake();kick()});
+    tt.addEventListener('pointermove',function(e){if(!drag)return;var a=drag.a+(e.clientX-drag.x)*.28;if(a>40)a=40+(a-40)*.3;if(a<-40)a=-40+(a+40)*.3;A=T=a;render()});
+    function end(){if(!drag)return;drag=null;tt.classList.remove('dragging');T=V[nearest(Math.max(-36,Math.min(36,A)))].a;wake();kick()}
+    tt.addEventListener('pointerup',end);tt.addEventListener('pointercancel',end);
+    tt.addEventListener('keydown',function(e){if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();T=Math.max(-36,Math.min(36,T+(e.key==='ArrowRight'?12:-12)));T=V[nearest(T)].a+(V.length>1?0:(e.key==='ArrowRight'?14:-14));wake();kick()}});
+    hsBox.addEventListener('click',function(e){var b=e.target.closest('.hs');if(!b)return;var on=b.classList.contains('open');hsBox.querySelectorAll('.hs').forEach(function(x){x.classList.remove('open')});if(!on)b.classList.add('open');wake()});
+    render();
+    /* gallery thumbs: real angles turn the machine; other shots open as photos */
+    function showPhoto(src,cut,label){tt.classList.add('photo');photo.hidden=false;photo.style.opacity=0;photo.classList.toggle('contain',cut);
+      setTimeout(function(){photo.src='img/'+src+'.webp';photo.alt='Tyent '+name+', '+label;photo.style.opacity=1},still?0:150)}
+    function showMachine(i){tt.classList.remove('photo');photo.hidden=true;T=V[i].a;A=T+(i?-14:14);wake();kick()}
     var btns=[].slice.call(sec.querySelectorAll('.gal button'));
-    btns.forEach(function(b){b.addEventListener('click',function(){btns.forEach(function(x){x.setAttribute('aria-pressed',x===b)});show(b.dataset.src,b.dataset.cut==='1',b.getAttribute('aria-label'))})});
+    btns.forEach(function(b){b.addEventListener('click',function(){btns.forEach(function(x){x.setAttribute('aria-pressed',x===b)});
+      var i=-1;V.forEach(function(v,k){if(v.src===b.dataset.src)i=k});if(i>=0)showMachine(i);else showPhoto(b.dataset.src,b.dataset.cut==='1',b.getAttribute('aria-label'))})});
     var sws=[].slice.call(sec.querySelectorAll('.sw'));
-    sws.forEach(function(s){s.addEventListener('click',function(){sws.forEach(function(x){x.setAttribute('aria-pressed',x===s)});sec.querySelector('.fname').textContent=s.dataset.n;btns.forEach(function(x){x.setAttribute('aria-pressed','false')});show(s.dataset.src,false,s.dataset.n+' faucet')})});
+    sws.forEach(function(s){s.addEventListener('click',function(){sws.forEach(function(x){x.setAttribute('aria-pressed',x===s)});sec.querySelector('.fname').textContent=s.dataset.n;btns.forEach(function(x){x.setAttribute('aria-pressed','false')});showPhoto(s.dataset.src,false,s.dataset.n+' faucet')})});
   });
   /* sticky family nav follows the scroll */
   var sn=document.getElementById('subnav'),ind=document.getElementById('ind'),links=[].slice.call(sn.querySelectorAll('a'));

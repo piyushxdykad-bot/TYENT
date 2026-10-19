@@ -330,3 +330,43 @@
       var tm=null,n=0;if(!still&&'IntersectionObserver' in window)new IntersectionObserver(function(e){if(e[0].isIntersecting){if(!tm&&dots.dataset.stop!=='1')tm=setInterval(function(){n=(+el.dataset.state+1)%4;el.setState(n)},2600)}else{clearInterval(tm);tm=null}}).observe(el)}
   });
 })();
+
+/* ===== V15: floating talk-to-us drop (WhatsApp + call back) ===== */
+(function(){
+  /* Put Tyent India's WhatsApp number here, digits only with country code, e.g. '919876543210'.
+     While it is empty, "WhatsApp us" collects the visitor's number so the team can message them. */
+  var WHATSAPP='';
+  var still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var waIcon='<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4a.5.5 0 0 0 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.7 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>';
+  var phIcon='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>';
+  var msg=encodeURIComponent("Hi Tyent India, I'd like to know more about your water ionizers.");
+  var waOpt=WHATSAPP?'<a class="wp-opt wa" href="https://wa.me/'+WHATSAPP+'?text='+msg+'" target="_blank" rel="noopener"><span class="ic">'+waIcon+'</span><span><b>Chat on WhatsApp</b><small>Usually replies within minutes</small></span><span class="go">→</span></a>'
+                    :'<button class="wp-opt wa" data-mode="wa"><span class="ic">'+waIcon+'</span><span><b>WhatsApp us</b><small>Leave your number, we\'ll message you</small></span><span class="go">→</span></button>';
+  var el=document.createElement('div');el.className='wpill';el.id='wpill';
+  el.innerHTML='<div class="wp-panel" id="wp-panel" role="dialog" aria-label="Talk to Tyent India" hidden>'+
+    '<div class="wp-top"><p class="wp-h">Talk to <em>Tyent India</em></p><button class="wp-x" aria-label="Close">✕</button></div>'+
+    '<p class="wp-sub">Questions about a machine, prices or your water? We\'re here.</p>'+
+    '<div class="wp-opts">'+waOpt+'<button class="wp-opt cb" data-mode="cb"><span class="ic">'+phIcon+'</span><span><b>Call me back</b><small>Within 10 minutes in working hours</small></span><span class="go">→</span></button></div>'+
+    '<form class="wp-form" novalidate hidden><p class="wp-fh"></p><label class="sr-only" for="wp-nm">Your name</label><input id="wp-nm" autocomplete="name" placeholder="Your name"><label class="sr-only" for="wp-mob">Mobile number</label><input id="wp-mob" inputmode="tel" autocomplete="tel" placeholder="Mobile number"><button class="btn btn-p" type="submit">Request <span class="arr">→</span></button><button class="wp-back" type="button">← Back</button><p class="wp-ok" role="status"></p></form>'+
+  '</div>'+
+  '<button class="wp-drop" aria-expanded="false" aria-controls="wp-panel" aria-label="Talk to Tyent India"><span class="wp-ring"></span><span class="wp-ring b"></span>'+
+    '<svg class="wp-ico" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.5A8.4 8.4 0 1 1 21 11.5z"/></svg>'+
+    '<svg class="wp-x2" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>'+
+  '<span class="wp-tip" aria-hidden="true">Need help choosing?</span>';
+  document.body.appendChild(el);
+  var drop=el.querySelector('.wp-drop'),panel=el.querySelector('.wp-panel'),form=el.querySelector('.wp-form'),opts=el.querySelector('.wp-opts'),fh=el.querySelector('.wp-fh'),ok=el.querySelector('.wp-ok'),mode='cb';
+  function open(o){el.classList.toggle('open',o);drop.setAttribute('aria-expanded',o);if(o){panel.hidden=false;requestAnimationFrame(function(){panel.classList.add('in')})}else{panel.classList.remove('in');setTimeout(function(){if(!el.classList.contains('open'))panel.hidden=true},still?0:300);reset()}}
+  function reset(){form.hidden=true;opts.hidden=false;ok.textContent='';ok.classList.remove('done')}
+  drop.addEventListener('click',function(){open(!el.classList.contains('open'));el.classList.add('seen')});
+  el.querySelector('.wp-x').addEventListener('click',function(){open(false);drop.focus()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&el.classList.contains('open')){open(false);drop.focus()}});
+  document.addEventListener('click',function(e){if(el.classList.contains('open')&&!el.contains(e.target))open(false)});
+  el.querySelectorAll('.wp-opt[data-mode]').forEach(function(b){b.addEventListener('click',function(){mode=b.dataset.mode;fh.textContent=mode==='wa'?'We\'ll message you on WhatsApp':'We\'ll call you back';opts.hidden=true;form.hidden=false;el.querySelector('#wp-nm').focus()})});
+  el.querySelector('.wp-back').addEventListener('click',reset);
+  form.addEventListener('submit',function(e){e.preventDefault();var nm=el.querySelector('#wp-nm').value.trim(),mob=el.querySelector('#wp-mob').value.replace(/\D/g,'');
+    if(!nm||mob.length<10){ok.classList.remove('done');ok.textContent='Add your name and a 10-digit mobile number.';return}
+    ok.classList.add('done');ok.textContent='Thanks, '+nm.split(' ')[0].replace(/</g,'')+'. '+(mode==='wa'?'On the live site the Tyent team will message you on WhatsApp shortly.':'On the live site the Tyent team will call you back shortly.')});
+  /* a gentle nudge once per visit */
+  var nudged=false;try{nudged=!!sessionStorage.getItem('tyent-tip')}catch(e){}
+  if(!nudged&&!still)setTimeout(function(){if(el.classList.contains('open')||el.classList.contains('seen'))return;el.classList.add('tip');try{sessionStorage.setItem('tyent-tip','1')}catch(e){}setTimeout(function(){el.classList.remove('tip')},4200)},9000);
+})();
