@@ -1067,7 +1067,7 @@ footer .fc .todo{color:#F3B26A}
 /* headings: sentence-case serif with an italic accent word */
 .serif,.sec-head h2,.h2,.rail-head h2,.band h2,.trust h2,.uce h2,.demo h2,.ch-copy h2,.pin-copy h2,.hx-head h2,.hx-coll-head h2{text-transform:none!important;font-family:var(--f-serif);font-weight:500;letter-spacing:-.012em;line-height:.98}
 .sec-head h2,.hx-head h2,.rail-head h2,.h2{font-size:clamp(2.5rem,5.2vw,4.8rem)}
-.sec-head h2 em,.hx-head h2 em,.rail-head h2 em,.h2 em,.ch-copy h2 em,.pin-copy h2 em,.hx-coll-head h2 em,.hx-trust h2 em,.hx-faq h2 em,.trust h2 em{font-style:italic;color:var(--accent)}
+.sec-head h2 em,.mo-head h2 em,.hx-head h2 em,.rail-head h2 em,.h2 em,.ch-copy h2 em,.pin-copy h2 em,.hx-coll-head h2 em,.hx-trust h2 em,.hx-faq h2 em,.trust h2 em{font-style:italic;color:var(--accent)}
 .band h2 em,.uce h2 em,.hx-demo h2 em,.hx-tech-copy h2 em,.quote em{font-style:italic;color:var(--sky)}
 .hx-slide h3,.qz-res h3{text-transform:none;font-weight:500}
 .hx-copy2 h2{text-transform:none}
@@ -1239,3 +1239,87 @@ footer .giant.pre{letter-spacing:.12em;opacity:.2}
 html.loading body{overflow:hidden}
 html.loading main *,html.loading header *,html.loading header{animation-play-state:paused!important}
 @media (prefers-reduced-motion:reduce){#pre *{animation-duration:.01s!important;animation-delay:0s!important}.pre-drop,.pre-ring,.pre-spl{display:none}#pre{transition:opacity .3s}#pre.out{transform:none;opacity:0}}
+
+/* ================= V14: 3D platinum plate stack ================= */
+.p3d-wrap{position:relative;justify-self:center;width:min(100%,540px);display:flex;flex-direction:column;align-items:center;gap:18px;z-index:1}
+.p3d-wrap.light{padding:48px 24px 30px;border-radius:999px 999px 28px 28px;background:radial-gradient(90% 70% at 50% 35%,#16467C 0%,#0A2A4F 50%,#05152A 100%);box-shadow:0 60px 100px -60px rgba(6,26,51,.8)}
+.p3d{--ry:-34deg;--gap:26px;position:relative;width:100%;aspect-ratio:1/1;perspective:1500px;perspective-origin:50% 40%}
+.p3d-stack{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(-12deg) rotateY(var(--ry)) translateZ(0);transition:transform .25s linear}
+.pl{position:absolute;left:30%;top:12%;width:40%;height:72%;border-radius:16px;transform:translateZ(calc((var(--i) - 6) * var(--gap)));transition:transform 1s cubic-bezier(.2,.8,.2,1),box-shadow .8s,border-color .8s;
+  background:
+    radial-gradient(circle,rgba(255,255,255,.22) 0 1.2px,transparent 1.6px) 0 0/16px 16px,
+    linear-gradient(155deg,rgba(236,246,255,.62) 0%,rgba(168,196,222,.26) 42%,rgba(110,150,192,.16) 72%,rgba(214,234,250,.5) 100%);
+  border:1.5px solid rgba(214,236,252,.85);box-shadow:inset 0 0 0 1px rgba(120,150,180,.25),0 0 0 rgba(0,0,0,0);overflow:hidden;backface-visibility:visible}
+.pl::before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.85) 48%,transparent 62%);transform:translateX(-130%);opacity:0;transition:opacity .6s}
+.pl b{position:absolute;right:10px;top:8px;font:600 .8rem var(--f-mono);color:rgba(6,26,51,.45)}
+.p3d[data-state="1"] .pl::before,.p3d[data-state="2"] .pl::before{opacity:1;animation:plSheen 1.6s ease-in-out infinite;animation-delay:calc(var(--i) * 70ms)}
+.p3d[data-state="2"] .pl::before{animation-direction:reverse}
+@keyframes plSheen{to{transform:translateX(130%)}}
+.p3d[data-state="1"] .pl{box-shadow:inset 0 0 0 1px rgba(142,216,248,.9),0 0 26px rgba(142,216,248,.45)}
+.p3d[data-state="2"] .pl:nth-child(odd){box-shadow:inset 0 0 0 1px rgba(240,154,58,.9),0 0 24px rgba(240,154,58,.4)}
+.p3d[data-state="2"] .pl:nth-child(even){box-shadow:inset 0 0 0 1px rgba(78,75,216,.9),0 0 24px rgba(78,75,216,.4)}
+.p3d[data-state="0"]{--gap:36px}.p3d[data-state="1"]{--gap:26px}.p3d[data-state="2"]{--gap:26px}.p3d[data-state="3"]{--gap:20px}
+.p3d-ions{position:absolute;inset:0;transform-style:preserve-3d;pointer-events:none;opacity:0;transition:opacity .8s}
+.p3d[data-state="3"] .p3d-ions{opacity:1}
+.p3d-ions i{position:absolute;left:var(--x);top:var(--y);width:7px;height:7px;margin:-3.5px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff,#8ED8F8 55%,#29AAE2);box-shadow:0 0 10px rgba(142,216,248,.9)}
+.p3d[data-state="3"] .p3d-ions i{animation:ion var(--t) linear var(--d) infinite}
+@keyframes ion{0%{transform:translate3d(0,0,-170px);opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translate3d(0,-26px,170px);opacity:0}}
+.p3d-floor{position:absolute;left:18%;right:18%;bottom:4%;height:12%;border-radius:50%;background:radial-gradient(rgba(142,216,248,.35),transparent 70%);filter:blur(8px);transform:translateZ(0)}
+.p3d-cap{font-family:var(--f-serif);font-style:italic;font-size:1.35rem;color:#BFE6FA;text-align:center;min-height:1.6em;transition:opacity .4s}
+.p3d-cap.swap{opacity:0}
+.p3d-dots{display:flex;gap:8px}
+.p3d-dots button{width:9px;height:9px;padding:0;border-radius:999px;border:0;background:rgba(142,216,248,.3);cursor:pointer;transition:width .4s var(--ease),background .4s}
+.p3d-dots button[aria-pressed="true"]{width:26px;background:#8ED8F8}
+.hx-tech .hs,.hx-cellwrap{display:none}
+@media (max-width:900px){.p3d-wrap{width:min(100%,330px)}.p3d-wrap.light{width:min(100%,360px)}}
+@media (prefers-reduced-motion:reduce){.pl::before,.p3d-ions i{animation:none!important}.p3d-stack{transition:none}}
+
+/* ================= V14: a day at home, drifting moments ================= */
+.hx-moments{position:relative;overflow:hidden;background:var(--bg)}
+.mo-head{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:end;margin-bottom:48px}
+.mo-head h2{font-size:clamp(2.5rem,5.2vw,4.8rem);margin-top:14px}
+.mo-head>p{color:var(--muted);max-width:44ch;justify-self:end;font-size:1.05rem}
+@media (max-width:860px){.mo-head{grid-template-columns:1fr}.mo-head>p{justify-self:start}}
+.mo-row{overflow:hidden;padding-block:9px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.mo-track{display:flex;gap:18px;width:max-content;animation:moL 70s linear infinite;will-change:transform}
+.mo-row.rev .mo-track{animation:moR 80s linear infinite}
+.mo-row:hover .mo-track{animation-play-state:paused}
+@keyframes moL{to{transform:translate3d(-50%,0,0)}}
+@keyframes moR{from{transform:translate3d(-50%,0,0)}to{transform:translate3d(0,0,0)}}
+.mo{position:relative;flex:0 0 auto;width:clamp(240px,24vw,340px);aspect-ratio:1.18;margin:0;border-radius:18px;overflow:hidden;background:var(--tint);transition:transform .6s var(--ease),box-shadow .6s}
+.mo:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 30px 60px -36px rgba(6,26,51,.6)}
+.mo img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
+.mo:hover img{transform:scale(1.06)}
+.mo figcaption{position:absolute;left:0;right:0;bottom:0;padding:40px 18px 16px;background:linear-gradient(180deg,transparent,rgba(4,16,34,.82));color:#fff;display:flex;flex-direction:column;gap:2px}
+.mo .t{font-family:var(--f-mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:#8ED8F8}
+.mo b{font-family:var(--f-serif);font-weight:500;font-size:1.45rem;line-height:1.1}
+@media (prefers-reduced-motion:reduce){.mo-track{animation:none}.mo-row{overflow-x:auto}}
+
+/* ================= V14: water edges between light and navy ================= */
+.wedge{position:absolute;left:0;width:100%;height:70px;pointer-events:none;z-index:2;display:block}
+.wedge.top{top:-69px}
+.wedge.bot{bottom:-69px}
+.hx-tech .wedge.top path{fill:#0A2A4F}
+.hx-tech .wedge.bot path{fill:#041224}
+.hx-demo .wedge.top path{fill:#061A33}
+.hx-demo{overflow:visible}
+.hx-demo>canvas{overflow:hidden}
+.hx-tech{background:linear-gradient(180deg,#0A2A4F 0%,#061A33 40%,#041224 100%)}
+.hx-tech-in{background:radial-gradient(70% 70% at 25% 45%,rgba(41,120,200,.35),transparent 70%)}
+
+/* ================= V14: refined feature strip ================= */
+.hx-feats{gap:0;background:var(--surface)}
+.hx-feats div{padding:46px 30px;gap:14px;transition:background .5s}
+.hx-feats div:hover{background:var(--mist)}
+.hx-feats svg{width:58px;height:58px;padding:15px;border-radius:50%;background:linear-gradient(135deg,color-mix(in srgb,var(--cyan) 18%,var(--surface)),color-mix(in srgb,var(--royal) 14%,var(--surface)));color:var(--accent);box-sizing:border-box}
+.hx-feats h3{font-size:1.5rem;font-weight:500}
+.hx-feats p{font-size:.9rem}
+
+/* ================= V14: cleaner collection slides ================= */
+.hx-slide .ghost{-webkit-text-stroke:1px color-mix(in srgb,var(--accent) 16%,transparent);font-size:clamp(6rem,15vw,14rem);top:auto;bottom:-4%;opacity:.9}
+.hx-slide .stage2{background:radial-gradient(60% 55% at 50% 55%,#fff 0 30%,transparent 72%),linear-gradient(180deg,#F4F8FB,#E3EEF6)}
+:root[data-theme="dark"] .hx-slide .stage2{background:radial-gradient(60% 55% at 50% 55%,#15304E 0 30%,transparent 72%),linear-gradient(180deg,#0E2238,#0A1728)}
+.hx-slide{border-radius:20px}
+
+.p3d-wrap.light .p3d{width:84%}
+.p3d-wrap.light{overflow:hidden}

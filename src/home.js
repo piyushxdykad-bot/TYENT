@@ -29,12 +29,12 @@
   /* ---------- technology reveal ---------- */
   var T=$('tech'),hs=[].slice.call(T.querySelectorAll('.hs')),tl=[].slice.call($('tlist').children),tbar=$('tbar');
   function tech(){
-    if(!desk()){hs.forEach(function(h){h.classList.add('on')});tl.forEach(function(d){d.classList.add('on')});return}
+    if(!desk()){hs.forEach(function(h){h.classList.add('on')});tl.forEach(function(d){d.classList.add('on')});var P0=$('p3d');if(P0&&P0.setState&&!P0._cyc){P0._cyc=1;var n0=0;setInterval(function(){n0=(n0+1)%4;P0.setState(n0)},2600)}return}
     var r=T.getBoundingClientRect(),q=clamp(-r.top/(T.offsetHeight-innerHeight),0,1),act=Math.min(3,Math.floor(q*4.2));
-    hs.forEach(function(h,i){h.classList.toggle('on',i===act)});tl.forEach(function(d,i){d.classList.toggle('on',i===act)});tbar.style.width=(q*100)+'%';
+    hs.forEach(function(h,i){h.classList.toggle('on',i===act)});tl.forEach(function(d,i){d.classList.toggle('on',i===act)});tbar.style.width=(q*100)+'%';var P=$('p3d');if(P&&P.setState)P.setState(act);
   }
   addEventListener('scroll',tech,{passive:true});addEventListener('resize',tech);tech();
-  tl.forEach(function(d,i){d.addEventListener('pointerenter',function(){if(!desk())return;hs.forEach(function(h,j){h.classList.toggle('on',j===i)});tl.forEach(function(x,j){x.classList.toggle('on',j===i)})})});
+  tl.forEach(function(d,i){d.addEventListener('pointerenter',function(){if(!desk())return;hs.forEach(function(h,j){h.classList.toggle('on',j===i)});tl.forEach(function(x,j){x.classList.toggle('on',j===i)});var P=$('p3d');if(P&&P.setState)P.setState(i)})});
   (function(){var c=$('techbub'),x=c.getContext('2d'),w,h,B=[];
     function sz(){w=c.offsetWidth;h=c.offsetHeight;c.width=w*dpr;c.height=h*dpr;x.setTransform(dpr,0,0,dpr,0,0);B=[];for(var i=0;i<60;i++)B.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*2.4+.5,s:Math.random()*.5+.2})}
     sz();addEventListener('resize',sz);var vis=false;if('IntersectionObserver' in window)new IntersectionObserver(function(e){vis=e[0].isIntersecting}).observe(T);

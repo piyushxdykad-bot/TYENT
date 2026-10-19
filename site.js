@@ -174,7 +174,7 @@
   });
 
   /* editorial headings: last word becomes the italic accent */
-  document.querySelectorAll('.sec-head h2,.hx-head h2,.rail-head h2,h2.h2,.ch-copy h2,.pin-copy h2,.band h2,.trust h2,.uce h2,.hx-coll-head h2,.hx-demo h2,.hx-tech-copy h2,.hx-trust h2,.hx-faq h2').forEach(function(h){
+  document.querySelectorAll('.sec-head h2,.hx-head h2,.rail-head h2,h2.h2,.ch-copy h2,.pin-copy h2,.band h2,.trust h2,.uce h2,.hx-coll-head h2,.hx-demo h2,.hx-tech-copy h2,.hx-trust h2,.hx-faq h2,.mo-head h2').forEach(function(h){
     if(h.querySelector('em,b'))return;var t=h.lastChild;if(!t||t.nodeType!==3)return;
     var m=t.textContent.match(/^([\s\S]*?)(\S+?)([.?!]?)\s*$/);if(!m||!m[2])return;
     t.textContent=m[1];var em=document.createElement('em');em.textContent=m[2];h.appendChild(em);if(m[3])h.appendChild(document.createTextNode(m[3]));
@@ -227,7 +227,7 @@
   var WAVE='<svg class="wave" viewBox="0 0 120 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M1 6 C 9 1, 16 1, 24 5 S 39 9, 47 5 S 62 1, 70 5 S 85 9, 93 5 S 108 1, 119 4"/></svg>';
 
   /* 1. section headings: split into rising words, draw a wave under the accent */
-  var H=[].slice.call(document.querySelectorAll('.sec-head h2,.hx-head h2,.rail-head h2,h2.h2,.ch-copy h2,.pin-copy h2,.band h2,.trust h2,.uce h2,.hx-coll-head h2,.hx-demo h2,.hx-tech-copy h2,.hx-trust h2,.hx-faq h2'));
+  var H=[].slice.call(document.querySelectorAll('.sec-head h2,.hx-head h2,.rail-head h2,h2.h2,.ch-copy h2,.pin-copy h2,.band h2,.trust h2,.uce h2,.hx-coll-head h2,.hx-demo h2,.hx-tech-copy h2,.hx-trust h2,.hx-faq h2,.mo-head h2'));
   H.forEach(function(h){var i=0;h.classList.add('split');h.setAttribute('aria-label',h.textContent.replace(/\s+/g,' ').trim());
     function wrap(node){[].slice.call(node.childNodes).forEach(function(n){
       if(n.nodeType===3){var f=document.createDocumentFragment();n.textContent.split(/(\s+)/).forEach(function(t){if(!t)return;if(/^\s+$/.test(t)){f.appendChild(document.createTextNode(' '));return}
@@ -302,4 +302,31 @@
   fm.addEventListener('pointermove',function(e){var r=fm.getBoundingClientRect();angT=((e.clientX-r.left)/r.width-.5)*-7;boost=.05;ampT=2;fm.style.setProperty('--glow',1);clearTimeout(calm);calm=setTimeout(function(){ampT=1},700)});
   fm.addEventListener('pointerleave',function(){angT=0;boost=0;ampT=1;fm.style.setProperty('--glow',.6)});
   fm.addEventListener('pointerdown',function(){ampT=2.6;boost=.09;setTimeout(function(){boost=.05},400)});
+})();
+
+/* ===== V14: 3D plate stack (built here, driven by scroll on the home page or auto elsewhere) ===== */
+(function(){
+  var still=matchMedia('(prefers-reduced-motion: reduce)').matches,fine=matchMedia('(pointer:fine)').matches&&!still;
+  var CAPS=['13 plates, dipped in platinum','Smart power reads your water','Polarity reverses to clean itself','Water flows between every plate'];
+  document.querySelectorAll('.p3d').forEach(function(el){
+    var h='<div class="p3d-stack"><div class="p3d-floor"></div>';
+    for(var i=0;i<13;i++)h+='<div class="pl" style="--i:'+i+'"><b>'+(i%2?'−':'+')+'</b></div>';
+    h+='<div class="p3d-ions">';for(var k=0;k<18;k++)h+='<i style="--x:'+(30+Math.random()*40).toFixed(1)+'%;--y:'+(18+Math.random()*64).toFixed(1)+'%;--t:'+(1.6+Math.random()*1.6).toFixed(2)+'s;--d:-'+(Math.random()*3).toFixed(2)+'s"></i>';
+    h+='</div></div>';el.innerHTML=h;
+    var stack=el.firstChild,wrap=el.parentNode,cap=wrap.querySelector('.p3d-cap');
+    /* state setter, used by the home page's scroll story and by the auto cycle */
+    el.setState=function(s){if(el.dataset.state===String(s))return;el.dataset.state=s;if(cap){cap.classList.add('swap');setTimeout(function(){cap.textContent=CAPS[s];cap.classList.remove('swap')},still?0:220)}
+      var ds=wrap.querySelectorAll('.p3d-dots button');ds.forEach(function(b,j){b.setAttribute('aria-pressed',j===+s)})};
+    /* rotation follows scroll position; tilt follows the pointer */
+    var ry=-52,tx=0,ty=0,cx=0,cy=0,raf=0;
+    function render(){raf=0;cx+=(tx-cx)*.12;cy+=(ty-cy)*.12;stack.style.transform='rotateX('+(-12+cy*-8).toFixed(2)+'deg) rotateY('+(ry+cx*14).toFixed(2)+'deg)';if(Math.abs(tx-cx)>.002||Math.abs(ty-cy)>.002)raf=requestAnimationFrame(render)}
+    function onScroll(){if(still)return;var r=el.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)return;var k=(r.top+r.height/2)/innerHeight;ry=-66+k*30;if(!raf)raf=requestAnimationFrame(render)}
+    addEventListener('scroll',onScroll,{passive:true});onScroll();
+    if(fine){wrap.addEventListener('pointermove',function(e){var r=wrap.getBoundingClientRect();tx=(e.clientX-r.left)/r.width-.5;ty=(e.clientY-r.top)/r.height-.5;if(!raf)raf=requestAnimationFrame(render)});
+      wrap.addEventListener('pointerleave',function(){tx=ty=0;if(!raf)raf=requestAnimationFrame(render)})}
+    /* auto pages: dots + gentle cycle while visible */
+    if(el.dataset.auto){var dots=document.createElement('div');dots.className='p3d-dots';dots.setAttribute('role','group');dots.setAttribute('aria-label','Plate stack stages');
+      CAPS.forEach(function(c,j){var b=document.createElement('button');b.setAttribute('aria-label',c);b.setAttribute('aria-pressed',j===0);b.addEventListener('click',function(){el.setState(j);clearInterval(tm);tm=null});dots.appendChild(b)});wrap.appendChild(dots);
+      var tm=null,n=0;if(!still&&'IntersectionObserver' in window)new IntersectionObserver(function(e){if(e[0].isIntersecting){if(!tm&&dots.dataset.stop!=='1')tm=setInterval(function(){n=(+el.dataset.state+1)%4;el.setState(n)},2600)}else{clearInterval(tm);tm=null}}).observe(el)}
+  });
 })();
