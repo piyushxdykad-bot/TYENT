@@ -1,24 +1,24 @@
 (function(){
   var still=matchMedia('(prefers-reduced-motion: reduce)').matches;
   var fams=[
-    {id:'ace',name:'ACE-13',tags:['Countertop','Flagship'],head:'Every water, one touch away.',
+    {id:'ace',url:'ace-13.html',name:'ACE-13',tags:['Countertop','Flagship'],head:'Every water, one touch away.',
      d:'The ACE-13 puts thirteen plates and a full-colour touchscreen on your counter. Turn the jog dial or tap the screen, and the machine shows the pH before you pour.',
      spec:[['Installation','Countertop'],['Plates','13 platinum-coated titanium'],['Controls','Colour touchscreen and jog dial'],['Water types','7, from acidic to turbo'],['Filtration','Two-stage filters']],
      g:[['ace','ACE-13 three-quarter view',1],['ace-front','ACE-13 front',1],['ace-touch','Touchscreen in use',0],['ace-jog','Jog dial',0],['ace-screens','Screen menus',0],['life-baby','Measured quantity for a baby bottle',0],['life-turbo','Turbo water for vegetables',0],['life-alkali','Alkaline water after a workout',0]]},
-    {id:'hybrid',name:'H2-Hybrid',tags:['Countertop','Hydrogen'],head:'An ionizer and a hydrogen generator in one.',
+    {id:'hybrid',url:'hybrid-h2.html',name:'H2-Hybrid',tags:['Countertop','Hydrogen'],head:'An ionizer and a hydrogen generator in one.',
      d:'Switch between ionized water for the kitchen and hydrogen-rich water for drinking. An illuminated dial and colour LCD make every setting easy to read.',
      spec:[['Installation','Countertop'],['Cell','Hybrid ionizing and hydrogen cell'],['Controls','Illuminated dial and colour LCD'],['Modes','Ionized and H₂ water'],['Power','Hybrid power supply']],
      g:[['hybrid','H2-Hybrid front',1],['hybrid-dial','Hydrogen dial',0],['hybrid-close','Side profile',0],['cell','The water cell',1],['life-sleep','Morning glass',0],['life-dog','Water for the dog',0],['life-mom','At home with family',0],['life-water','Drinking at home',0]]},
-    {id:'uce',name:'UCE-13 Plus',tags:['Under-counter','4 finishes'],head:'Hidden below. Only the faucet shows.',
+    {id:'uce',url:'uce-13-plus.html',models:[['uce-9-plus.html','UCE-9 Plus'],['uce-11-plus.html','UCE-11 Plus'],['uce-13-plus.html','UCE-13 Plus']],name:'UCE-13 Plus',tags:['Under-counter','4 finishes'],head:'Hidden below. Only the faucet shows.',
      d:'The ionizer fits inside your cabinet. Above the sink you get a slim faucet with its own touchscreen, in Satin Silver, Matte Black, Gold or Antique.',
      spec:[['Installation','Under-counter with faucet'],['Plates','13 platinum-coated titanium'],['Controls','Touchscreen on the faucet'],['Finishes','Satin Silver, Matte Black, Gold, Antique'],['Counter space','Only the faucet']],
      fin:[['Satin Silver','#C9CDD3','f-silver'],['Matte Black','#1B1D21','f-black'],['Gold','#C9A85E','f-gold'],['Antique','#7A5A48','f-antique']],
      g:[['uce-set2','Ionizer with faucet',1],['uce-set','Satin silver set',1],['uce-touch','Faucet touchscreen',1],['uce-gold-situ','Gold faucet on marble',0],['uce-outlet','Black faucet pouring',0],['uce-box','Ionizer unit',1],['life-acidic','Acidic water for skin',0],['life-q2','Rinsing with acidic water',0]]},
-    {id:'nmp',name:'NMP Series',tags:['Countertop','5–11 plates'],head:'The everyday Tyent, sized to your family.',
+    {id:'nmp',url:'nmp-9.html',models:[['nmp-5.html','NMP-5'],['nmp-7.html','NMP-7'],['nmp-9.html','NMP-9'],['nmp-11.html','NMP-11']],name:'NMP Series',tags:['Countertop','5–11 plates'],head:'The everyday Tyent, sized to your family.',
      d:'Choose five, seven, nine or eleven plates depending on how many people drink from it. A wide LCD shows your setting, and an illuminated button starts the flow.',
      spec:[['Installation','Countertop'],['Plates','5, 7, 9 or 11'],['Controls','Wide LCD and illuminated button'],['Power','Eco mode'],['Best for','Matching size to household']],
      g:[['nmp9','NMP-9',1],['nmp57','NMP-5 and NMP-7',1],['edge-angle','Angled view',0],['edge-screen','LCD close-up',0],['life-edge','In the kitchen',0],['life-turbo','Washing vegetables',0],['life-sleep','First glass of the day',0],['life-dog','For pets too',0]]},
-    {id:'q',name:'Q-Series',tags:['Countertop','Eco'],head:'Soft lines. Simple settings.',
+    {id:'q',url:'q-series.html',name:'Q-Series',tags:['Countertop','Eco'],head:'Soft lines. Simple settings.',
      d:'A rounded, compact design with colour-coded water settings the whole family can read at a glance, and an eco mode that saves power between pours.',
      spec:[['Installation','Countertop'],['Controls','Soft-touch panel'],['Settings','Colour-coded water types'],['Power','Eco mode'],['Design','Compact, rounded body']],
      g:[['q','Q-Series with eco mode',1],['q-front','Front view',0],['q-screens','Water settings',1],['life-q1','Everyday use',0],['life-q2','Acidic face wash',0],['life-water','A glass at home',0],['life-alkali','After a workout',0],['life-acidic','Fresh face',0]]}
@@ -34,7 +34,7 @@
       '<h2 class="h2" id="'+f.id+'-h" style="font-size:clamp(2.6rem,5.4vw,4.6rem)">'+f.name+'</h2><p style="font-family:var(--f-display);font-size:1.4rem;letter-spacing:-.02em;margin-top:10px">'+f.head+'</p>'+
       '<p class="body">'+f.d+'</p>'+fin+
       '<dl class="spec">'+f.spec.map(function(s){return '<dt>'+s[0]+'</dt><dd>'+s[1]+'</dd>'}).join('')+'</dl>'+
-      '<div class="buy" data-prod="'+f.id+'"></div><a class="buy-demo" href="contact.html#enquire">Or book a free home demo first →</a></div>'+
+      '<div class="buy" data-prod="'+f.id+'"></div>'+(f.models?'<div class="pd-models" aria-label="Every model">'+f.models.map(function(m){return '<a href="'+m[0]+'">'+m[1]+' →</a>'}).join('')+'</div>':'')+'<a class="pd-link" href="'+f.url+'">Full details &amp; specifications →</a><a class="buy-demo" href="contact.html#enquire">Or book a free home demo first →</a></div>'+
       '</div></section>';
   }).join('');
 

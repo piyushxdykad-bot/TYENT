@@ -60,7 +60,7 @@
   if('IntersectionObserver' in window&&!still){
     var io2=new IntersectionObserver(function(es){es.forEach(function(en){if(!en.isIntersecting)return;io2.unobserve(en.target);
       var el=en.target,to=+el.dataset.to,suf=el.dataset.suf||'',t0=performance.now();
-      (function st(t){var k=Math.min(1,(t-t0)/1300);el.textContent=Math.round(to*(1-Math.pow(1-k,3)))+suf;if(k<1)requestAnimationFrame(st)})(t0)})},{threshold:.6});
+      (function st(t){var k=Math.min(1,(t-t0)/1300);var vv=Math.round(to*(1-Math.pow(1-k,3)));el.textContent=(el.dataset.fmt?vv.toLocaleString('en-IN'):vv)+suf;if(k<1)requestAnimationFrame(st)})(t0)})},{threshold:.6});
     nums.forEach(function(n){io2.observe(n)});
   }
 
@@ -309,13 +309,13 @@
   var still=matchMedia('(prefers-reduced-motion: reduce)').matches,fine=matchMedia('(pointer:fine)').matches&&!still;
   var CAPS=['13 plates, dipped in platinum','Smart power reads your water','Polarity reverses to clean itself','Water flows between every plate'];
   document.querySelectorAll('.p3d').forEach(function(el){
-    var h='<div class="p3d-stack"><div class="p3d-floor"></div>';
-    for(var i=0;i<13;i++)h+='<div class="pl" style="--i:'+i+'"><b>'+(i%2?'−':'+')+'</b></div>';
+    var N=+el.dataset.n||13,h='<div class="p3d-stack" style="--mid:'+((N-1)/2)+'"><div class="p3d-floor"></div>';
+    for(var i=0;i<N;i++)h+='<div class="pl" style="--i:'+i+'"><b>'+(i%2?'−':'+')+'</b></div>';
     h+='<div class="p3d-ions">';for(var k=0;k<18;k++)h+='<i style="--x:'+(30+Math.random()*40).toFixed(1)+'%;--y:'+(18+Math.random()*64).toFixed(1)+'%;--t:'+(1.6+Math.random()*1.6).toFixed(2)+'s;--d:-'+(Math.random()*3).toFixed(2)+'s"></i>';
     h+='</div></div>';el.innerHTML=h;
     var stack=el.firstChild,wrap=el.parentNode,cap=wrap.querySelector('.p3d-cap');
     /* state setter, used by the home page's scroll story and by the auto cycle */
-    el.setState=function(s){if(el.dataset.state===String(s))return;el.dataset.state=s;if(cap){cap.classList.add('swap');setTimeout(function(){cap.textContent=CAPS[s];cap.classList.remove('swap')},still?0:220)}
+    el.setState=function(s){if(el.dataset.state===String(s))return;el.dataset.state=s;if(cap){cap.classList.add('swap');setTimeout(function(){cap.textContent=s==0?N+' plates, dipped in platinum':CAPS[s];cap.classList.remove('swap')},still?0:220)}
       var ds=wrap.querySelectorAll('.p3d-dots button');ds.forEach(function(b,j){b.setAttribute('aria-pressed',j===+s)})};
     /* rotation follows scroll position; tilt follows the pointer */
     var ry=-52,tx=0,ty=0,cx=0,cy=0,raf=0;
@@ -378,14 +378,20 @@
 (function(){
   /* PRICES in rupees. null shows "Price on request" (our team confirms it when the order comes in). */
   var CATALOG={
-    ace:{name:'ACE-13',img:'ace',price:null,tag:'Countertop · 13 plates'},
-    hybrid:{name:'H2-Hybrid',img:'hybrid',price:367000,tag:'Countertop · hydrogen'},
-    uce:{name:'UCE-13 Plus',img:'uce-set2',price:null,tag:'Under-counter · 13 plates',vlabel:'Finish',variants:[['Satin Silver',null],['Matte Black',null],['Gold',null],['Antique',null]],finishFromSwatch:true},
-    nmp:{name:'NMP Series',img:'nmp9',tag:'Countertop',vlabel:'Plates',variants:[['NMP-5',168000],['NMP-7',null],['NMP-9',null],['NMP-11',272000]]},
-    q:{name:'Q-Series',img:'q',price:null,tag:'Countertop · eco'},
-    filters:{name:'Replacement filter set',img:'filters',price:null,tag:'Stage 1 + stage 2'},
-    scale:{name:'Tyent Scale Remover',img:'scale',price:null,tag:'For hard water'},
-    soap:{name:'TM-X Beauty Soap',img:'soap',price:null,tag:'Fermentation soap'}
+    ace:{name:'ACE-13',img:'ace',price:null,tag:'Countertop · 13 plates',url:'ace-13.html'},
+    hybrid:{name:'H2-Hybrid',img:'hybrid',price:367000,tag:'Countertop · twin cell',url:'hybrid-h2.html'},
+    uce9:{name:'UCE-9 Plus',img:'uce-set2',tag:'Under-counter · 9 plates',vlabel:'Finish',variants:[['Satin Silver',325000],['Matte Black',325000],['Gold',325000],['Antique',325000]],finishFromSwatch:true,url:'uce-9-plus.html'},
+    uce11:{name:'UCE-11 Plus',img:'uce-set2',tag:'Under-counter · 11 plates',vlabel:'Finish',variants:[['Satin Silver',346000],['Matte Black',346000],['Gold',346000],['Antique',346000]],finishFromSwatch:true,url:'uce-11-plus.html'},
+    uce:{name:'UCE-13 Plus',img:'uce-set2',tag:'Under-counter · 13 plates',vlabel:'Finish',variants:[['Satin Silver',367000],['Matte Black',367000],['Gold',367000],['Antique',367000]],finishFromSwatch:true,url:'uce-13-plus.html'},
+    nmp:{name:'NMP Series',img:'nmp9',tag:'Countertop',vlabel:'Plates',variants:[['NMP-5',168000],['NMP-7',205000],['NMP-9',238000],['NMP-11',272000]],url:'nmp-9.html'},
+    nmp5:{name:'NMP-5',img:'nmp57',price:168000,tag:'Countertop · 5 plates',url:'nmp-5.html'},
+    nmp7:{name:'NMP-7',img:'nmp57',price:205000,tag:'Countertop · 7 plates',url:'nmp-7.html'},
+    nmp9:{name:'NMP-9',img:'nmp9',price:238000,tag:'Countertop · 9 plates',url:'nmp-9.html'},
+    nmp11:{name:'NMP-11',img:'nmp9',price:272000,tag:'Countertop · 11 plates',url:'nmp-11.html'},
+    q:{name:'Q-Series',img:'q',price:null,tag:'Countertop · eco',url:'q-series.html'},
+    filters:{name:'Replacement filter set',img:'filters',price:null,tag:'Stage 1 + stage 2',url:'filters.html'},
+    scale:{name:'Tyent Scale Remover',img:'scale',price:null,tag:'For hard water',url:'scale-remover.html'},
+    soap:{name:'TM-X Beauty Soap',img:'soap',price:999,tag:'Fermentation soap · 80 g',url:'tm-x-soap.html'}
   };
   var still=matchMedia('(prefers-reduced-motion: reduce)').matches,KEY='tyent-basket';
   function $(id){return document.getElementById(id)}
@@ -415,7 +421,7 @@
     function variant(){if(!p.variants)return '';if(p.finishFromSwatch){var sw=b.closest('section')&&b.closest('section').querySelector('.sw[aria-pressed="true"]');return sw?sw.dataset.n:p.variants[0][0]}return p.variants[Math.max(0,sel)][0]}
     function paint(){var v=variant(),pr=priceOf(id,v);
       if(mini&&p.variants&&!p.finishFromSwatch){var ps=p.variants.map(function(x){return x[1]}).filter(function(x){return x!=null});bp.textContent=ps.length?'From '+rs(Math.min.apply(null,ps)):'Price on request';bs.textContent=ps.length?'NMP-5 to NMP-11':'We\'ll confirm today\'s price'}
-      else{bp.textContent=pr!=null?rs(pr):'Price on request';bs.textContent=pr!=null?(v?v+' · ':'')+'installation arranged by our team':(v?v+' · ':'')+'our team confirms the price when you order'}
+      else{bp.textContent=pr!=null?rs(pr):'Price on request';bs.textContent=pr!=null?(b.classList.contains('pd-buy')?'M.R.P. · ':'')+(v?v+' · ':'')+'installation arranged by our team':(v?v+' · ':'')+'our team confirms the price when you order'}
       b.classList.toggle('req',bp.textContent==='Price on request')}
     paint();
     b.querySelectorAll('.buy-var button').forEach(function(x){x.addEventListener('click',function(){sel=+x.dataset.i;b.querySelectorAll('.buy-var button').forEach(function(y){y.setAttribute('aria-pressed',y===x)});paint()})});
@@ -440,7 +446,7 @@
     if(!basket.length){view='list';body.innerHTML='<div class="bk-empty"><div class="bk-glass"><span></span></div><h3>Your basket is empty.</h3><p>Pick a machine and we\'ll take care of the water test and installation.</p><a class="btn btn-p" href="products.html">Explore ionizers <span class="arr">→</span></a></div>';foot.innerHTML='';return}
     if(view==='checkout')return renderCheckout();
     body.innerHTML='<ul class="bk-list">'+basket.map(function(i,k){var p=CATALOG[i.id],pr=priceOf(i.id,i.v);
-      return '<li class="bk-item"><div class="bk-im"><img src="img/'+p.img+'.webp" alt=""></div><div class="bk-info"><b>'+esc(p.name)+'</b><small>'+esc(i.v&&i.v!==p.name?i.v:p.tag)+'</small>'+
+      return '<li class="bk-item"><div class="bk-im"><img src="img/'+p.img+'.webp" alt=""></div><div class="bk-info"><b>'+(p.url?'<a href="'+p.url+'">'+esc(p.name)+'</a>':esc(p.name))+'</b><small>'+esc(i.v&&i.v!==p.name?i.v:p.tag)+'</small>'+
       '<div class="bk-row"><div class="qty" role="group" aria-label="Quantity of '+esc(p.name)+'"><button type="button" data-k="'+k+'" data-d="-1" aria-label="One fewer">−</button><span>'+i.q+'</span><button type="button" data-k="'+k+'" data-d="1" aria-label="One more">+</button></div>'+
       '<span class="bk-pr">'+(pr!=null?rs(pr*i.q):'<i>Price on request</i>')+'</span></div></div><button class="bk-rm" data-rm="'+k+'" aria-label="Remove '+esc(p.name)+'">✕</button></li>'}).join('')+'</ul>'+
       '<div class="bk-perks"><span>✓ Free water test before installation</span><span>✓ Installation arranged by Tyent India</span><span>✓ Genuine filters delivered to your door</span></div>';

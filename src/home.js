@@ -82,11 +82,11 @@
     {q:'Where does your water come from?',k:'src',o:[['Municipal supply','City pipeline'],['Borewell','Ground water'],['Tanker','Delivered water'],['Not sure','We will test it']]}
   ];
   var R={
-    nmp:{n:'NMP Series',im:'nmp9',h:'nmp',d:'The everyday Tyent, with a plate count matched to your family.'},
-    ace:{n:'ACE-13',im:'ace',h:'ace',d:'Thirteen plates and a colour touchscreen for homes that want the best on the counter.'},
-    hybrid:{n:'H2-Hybrid',im:'hybrid',h:'hybrid',d:'An ionizer and hydrogen water generator in one machine.'},
-    uce:{n:'UCE-13 Plus',im:'uce-set2',h:'uce',d:'Thirteen plates hidden under your sink, with a touchscreen faucet in four finishes.'},
-    q:{n:'Q-Series',im:'q',h:'q',d:'Soft design, colour-coded settings and an energy-saving eco mode.'}
+    nmp:{n:'NMP Series',im:'nmp9',h:'nmp-9.html',d:'The everyday Tyent, with a plate count matched to your family.'},
+    ace:{n:'ACE-13',im:'ace',h:'ace-13.html',d:'Thirteen plates and a colour touchscreen for homes that want the best on the counter.'},
+    hybrid:{n:'H2-Hybrid',im:'hybrid',h:'hybrid-h2.html',d:'An ionizer and hydrogen water generator in one machine.'},
+    uce:{n:'UCE-13 Plus',im:'uce-set2',h:'uce-13-plus.html',d:'Thirteen plates hidden under your sink, with a touchscreen faucet in four finishes.'},
+    q:{n:'Q-Series',im:'q',h:'q-series.html',d:'Soft design, colour-coded settings and an energy-saving eco mode.'}
   };
   var body=$('qz-body'),ans={},step=0,L='ABCD';
   function show(){
@@ -105,7 +105,7 @@
     if(k==='nmp')why.push(ans.size===0?'NMP-5 or NMP-7 will be plenty':ans.size===1?'NMP-9 is the sweet spot':'Go for NMP-11');
     why.push(ans.src===1||ans.src===2?'We will likely add a pre-filter or Scale Remover for '+(ans.src===1?'borewell':'tanker')+' water':ans.src===3?'Our free water test will confirm the right pre-filter':'City water usually needs no extra pre-filter');
     $('qz-lab').textContent='Your match';
-    body.innerHTML='<div class="qz-step qz-res"><div class="im"><img src="img/'+r.im+'.webp" alt="Tyent '+r.n+'"></div><div><p class="kicker">We recommend</p><h3 class="serif">'+r.n+'</h3><p>'+r.d+'</p><ul class="why">'+why.map(function(w){return '<li>'+w+'</li>'}).join('')+'</ul><div class="acts"><a class="btn btn-p" href="#demo" id="qz-book">Book a demo of the '+r.n+' <span class="arr">→</span></a><a class="btn btn-g" href="products.html#'+r.h+'">See details</a><button class="qz-back" id="qz-again">Start again</button></div></div></div>';
+    body.innerHTML='<div class="qz-step qz-res"><div class="im"><img src="img/'+r.im+'.webp" alt="Tyent '+r.n+'"></div><div><p class="kicker">We recommend</p><h3 class="serif">'+r.n+'</h3><p>'+r.d+'</p><ul class="why">'+why.map(function(w){return '<li>'+w+'</li>'}).join('')+'</ul><div class="acts"><a class="btn btn-p" href="#demo" id="qz-book">Book a demo of the '+r.n+' <span class="arr">→</span></a><a class="btn btn-g" href="'+r.h+'">See details</a><button class="qz-back" id="qz-again">Start again</button></div></div></div>';
     $('qz-again').addEventListener('click',function(){ans={};step=0;show()});
     $('qz-book').addEventListener('click',function(){var sel=$('d-md');if(sel)[].slice.call(sel.options).forEach(function(o,i){if(o.text===r.n)sel.selectedIndex=i})});
   }

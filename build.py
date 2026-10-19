@@ -18,12 +18,13 @@ ABOUT = [('about.html#story','Our Story','Thirty years of ionizer engineering','
          ('about.html#india','Tyent India','The team that brings Tyent home','india'),
          ('about.html#values','Our Values','What we promise every family','values'),
          ('about.html#service','Service Network','Installation, filters and care','service')]
-PRODUCTS = [('products.html#ace','ACE-13','13 plates · touchscreen','ace'),
-            ('products.html#hybrid','H2-Hybrid','Ionizer + hydrogen water','hybrid'),
-            ('products.html#uce','UCE-13 Plus','Under-counter · 4 finishes','uce-set2'),
-            ('products.html#nmp','NMP Series','5 to 11 plates · classic','nmp9'),
-            ('products.html#q','Q-Series','Eco mode · soft design','q'),
+PRODUCTS = [('ace-13.html','ACE-13','13 plates · touchscreen','ace'),
+            ('hybrid-h2.html','H2-Hybrid','Ionizer + hydrogen water','hybrid'),
+            ('uce-13-plus.html','UCE Plus Series','Under-counter · 9, 11 or 13 plates','uce-set2'),
+            ('nmp-9.html','NMP Series','Countertop · 5, 7, 9 or 11 plates','nmp9'),
+            ('q-series.html','Q-Series','Eco mode · soft design','q'),
             ('products.html#care','Filters & Accessories','Filters, scale remover, soap','filters')]
+MODELS = [('nmp-5.html','NMP-5'),('nmp-7.html','NMP-7'),('nmp-9.html','NMP-9'),('nmp-11.html','NMP-11'),('uce-9-plus.html','UCE-9 Plus'),('uce-11-plus.html','UCE-11 Plus'),('uce-13-plus.html','UCE-13 Plus'),('hybrid-h2.html','H2-Hybrid'),('ace-13.html','ACE-13'),('q-series.html','Q-Series'),('filters.html','Filters'),('scale-remover.html','Scale Remover'),('tm-x-soap.html','TM-X Soap')]
 FLAT = [('why-tyent.html','Why Tyent','why'),('why-water-ionizer.html','Why Water Ionizer','wwi'),
         ('certifications.html','Certifications','certs'),('blogs.html','Blogs','blogs'),('contact.html','Contact Us','contact')]
 
@@ -42,7 +43,7 @@ def header(active):
     <nav class="links" aria-label="Primary">
       <a href="./"{cur('home')}>Home</a>
       <div class="dd"><button class="dd-btn{' cur' if active=='about' else ''}" aria-expanded="false" aria-haspopup="true">About Us {CHEV}</button><div class="dd-panel">{about}</div></div>
-      <div class="dd mega"><button class="dd-btn{' cur' if active=='products' else ''}" aria-expanded="false" aria-haspopup="true">Products {CHEV}</button><div class="dd-panel mega-panel">{prods}<a class="all" href="products.html">Compare all ionizers <span>→</span></a></div></div>
+      <div class="dd mega"><button class="dd-btn{' cur' if active=='products' else ''}" aria-expanded="false" aria-haspopup="true">Products {CHEV}</button><div class="dd-panel mega-panel">{prods}<div class="mega-models"><span>Every model</span>{''.join(f'<a href="{h}">{t}</a>' for h,t in MODELS)}</div><a class="all" href="products.html">Compare all ionizers <span>→</span></a></div></div>
       {flat}
     </nav>
     <div class="nav-r">
@@ -58,7 +59,7 @@ def header(active):
     <div class="dr-top"><a class="logo" href="./">{LOGO}</a><button class="icon-btn dr-close" aria-label="Close menu">✕</button></div>
     <a href="./"{cur('home')}>Home</a>
     <div class="dr-group"><span>About Us</span><div>{''.join(f'<a href="{h}">{t}</a>' for h,t,s,i in ABOUT)}</div></div>
-    <div class="dr-group"><span>Products</span><div>{''.join(f'<a href="{h}">{t}</a>' for h,t,s,i in PRODUCTS)}</div></div>
+    <div class="dr-group"><span>Products</span><div><a href="products.html">All products</a>{''.join(f'<a href="{h}">{t}</a>' for h,t in MODELS)}</div></div>
     {dr_flat}
     <a class="btn btn-p" href="contact.html#enquire">Book a free home demo <span class="arr">→</span></a>
   </div>
@@ -111,3 +112,8 @@ if __name__ == '__main__':
                            ('contact.html','Contact Tyent India','contact')]:
         base = fn[:-5]
         page(fn, title, key, src(base + '.main.html'), src(base + '.js'), band=(key != 'contact'))
+    sys.path.insert(0, SRC)
+    import pdp
+    for slug in pdp.ORDER:
+        q = pdp.P[slug]
+        page(slug + '.html', f"Tyent {q['name']} | Tyent India", 'products', pdp.render(slug), src('pdp.js'))
