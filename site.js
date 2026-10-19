@@ -267,22 +267,39 @@
   addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(frame)}},{passive:true});frame();
 })();
 
-/* ===== V12: footer logo fills with water as you arrive, sloshes toward the cursor ===== */
+/* ===== V12c: footer logo fills with water. Small canvas, max 30fps, only while visible ===== */
 (function(){
-  var fm=document.getElementById('fmark');if(!fm)return;
-  var lvl=document.getElementById('fmlevel'),still=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var cur=.12,target=.12,ang=0,angT=0,boost=0,running=false,vis=false;
-  function goal(){var r=fm.getBoundingClientRect(),vh=innerHeight,k=(vh-r.top)/(vh*.55+r.height*.6);k=Math.max(0,Math.min(1,k));return .1+.43*(k*k*(3-2*k))}
-  function apply(){var L=660-(cur+boost)*282;lvl.setAttribute('transform','translate(0 '+L.toFixed(2)+') rotate('+ang.toFixed(2)+' 540 0)')}
-  if(still){cur=.5;apply();return}
-  function tick(){cur+=(target-cur)*.06;ang+=(angT-ang)*.08;apply();
-    if(Math.abs(target-cur)>.0008||Math.abs(angT-ang)>.01){requestAnimationFrame(tick)}else running=false}
-  function kick(){if(!running){running=true;requestAnimationFrame(tick)}}
-  if('IntersectionObserver' in window)new IntersectionObserver(function(e){vis=e[0].isIntersecting;if(vis){target=goal();kick()}},{rootMargin:'200px'}).observe(fm);
-  addEventListener('scroll',function(){if(!vis)return;target=goal();kick()},{passive:true});
+  var fm=document.getElementById('fmark'),cv=document.getElementById('fmcv');if(!fm||!cv)return;
+  var still=matchMedia('(prefers-reduced-motion: reduce)').matches,cx=cv.getContext('2d'),RES=.6,W=0,H=0,mk=null,ready=false;
+  var img=new Image();img.onload=function(){ready=true;size();draw(0)};img.src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%22168 378 744 282%22 preserveAspectRatio=%22none%22 width=%22744%22 height=%22282%22%3E%3Cg fill=%22%23000%22%3E%3Cpath d=%22M457.66,501.61c0,6.52,0,12.11,0,18.4c42.91,0,85.79,0,128.95,0c0,7.91,0,15.12,0,23.12 c-42.92,0-85.8,0-128.56,0c-2.09,13.74,2.09,18.66,15.11,18.66c35.9,0,71.81,0,107.71-0.01c1.79,0,3.57,0,5.69,0 c0,7.62,0,14.83,0,22.85c-1.47,0-3.04,0-4.62,0c-36.07,0.02-72.15-0.42-108.2,0.21c-25.22,0.44-39.66-17.17-39.51-39.11 c0.08-11.25-0.02-22.51-0.04-33.76c0-1.59,0-3.18-1.04-5.18c-5.1,6.17-10.22,12.32-15.31,18.5c-5.77,7.03-11.34,14.23-17.34,21.05 c-2.74,3.11-3.72,6.29-3.62,10.31c0.21,9.08,0.07,18.16,0.07,27.63c-7.68,0-15,0-22.99,0c0-9.38-0.13-18.75,0.06-28.12 c0.08-3.84-0.86-6.84-3.42-9.88c-11.61-13.77-22.91-27.81-34.45-41.64c-1.11-1.33-3.13-2.69-4.74-2.71 c-22.17-0.16-44.34-0.09-66.51-0.05c-0.63,0-1.25,0.27-2.48,0.54c0,27.22,0,54.45,0,81.95c-7.84,0-15.06,0-22.78,0 c0-27.27,0-54.5,0-82.57c-2.39,0-4.29,0-6.18,0c-17.87,0-35.74-0.11-53.61,0.1c-3.97,0.05-5.27-1.15-5.03-5.06 c0.3-4.78,0.21-9.6,0.04-14.39c-0.11-3,0.92-4.15,3.99-4.01c4.46,0.2,8.93,0.06,13.4,0.05c48.48-0.01,96.96,0.06,145.43-0.14 c4.34-0.02,6.93,1.44,9.49,4.66c11.62,14.62,23.44,29.08,35.2,43.58c0.92,1.14,1.95,2.19,3.17,3.55 c11.28-13.71,22.89-26.84,33.3-40.86c6.22-8.37,13.03-11.24,23.49-11.09c46.15,0.64,92.32,0.28,138.48,0.28c1.79,0,3.58,0,5.72,0 c0,7.85,0,15.2,0,23.13C543.74,501.61,500.97,501.61,457.66,501.61z%22/%3E%3Cpath d=%22M743.61,478.77c54.12,0,107.49,0,161.54,0c0,7,0.05,13.73-0.02,20.47c-0.03,3.53-2.84,2.58-4.77,2.58 c-17.7,0.05-35.41,0.01-53.11-0.01c-1.96,0-3.92,0-6.43,0c0,27.62,0,54.84,0,82.44c-7.87,0-15.18,0-23,0c0-27.31,0-54.52,0-82.1 c-17.26,0-34.03,0-51.37,0c0,1.94,0,3.71,0,5.48c0,17.88,0.13,35.75-0.03,53.63c-0.12,13.16-8.94,23.18-21.8,24.74 c-8.43,1.02-15.52-2.35-21.49-8.15c-25.87-25.11-51.69-50.27-77.6-75.34c-1.71-1.66-3.99-2.73-7.28-4.93c0,30.01,0,58.22,0,86.75 c-7.82,0-15,0-22.56,0c-0.15-1.23-0.42-2.48-0.42-3.73c0-26.15-0.07-52.31,0.11-78.46c0.09-12.63,7.52-22.42,19.12-25.19 c9.08-2.16,17.5-0.2,24.33,6.39c20.94,20.22,41.75,40.58,62.62,60.87c5.57,5.42,11.13,10.86,16.81,16.16 c1.1,1.03,2.75,1.47,4.14,2.18c0.41-1.49,1.16-2.98,1.16-4.47c0.07-24.5,0.04-48.99,0.04-73.49 C743.61,482.8,743.61,481.01,743.61,478.77z%22/%3E%3Cpath d=%22M470.42,451.87c-8.73,0.67-15.11,0.75-21.46-5.36c-22.22-21.37-49.24-34.64-78.59-43.27 c-27.69-8.15-56.1-11.06-84.81-9.17c-38.42,2.53-74.82,12.23-107.41,33.7c-0.52,0.34-1.11,0.59-1.97,1.05 c14.54-21.4,84.24-43.84,134.52-42.65C371.74,387.61,425.43,407.57,470.42,451.87z%22/%3E%3Cpath d=%22M895.63,609.91c-54.83,56.26-168.89,53.76-221.19,2.51c33.46,22.96,70.75,33.09,110.93,32.82 C825.69,644.95,862.89,634.49,895.63,609.91z%22/%3E%3Cpath d=%22M194.99,438.87c54.71-44.11,156.05-45.43,213.25-0.66c-32.92-19.73-69.06-27.27-106.8-27.24 C263.7,411,227.69,418.74,194.99,438.87z%22/%3E%3Cpath d=%22M244.32,613.83v-2.22h13.33v2.22l-6.12,0.62h-1.21L244.32,613.83z M251.53,635.92l6.12,0.62v2.22h-13.33 v-2.22l6-0.62H251.53z M247.5,624.42c0-4.26,0-8.55-0.12-12.81h7.19c-0.12,4.17-0.12,8.47-0.12,12.81v1.5 c0,4.29,0,8.58,0.12,12.84h-7.19c0.12-4.17,0.12-8.47,0.12-12.81V624.42z%22/%3E%3Cpath d=%22M293.23,636.54l4.4-0.62h1.18l5.32,0.62v2.22h-10.9V636.54z M295.39,613.07l2.38,1.17l-4.48-0.38v-2.25h9.33 l14.82,20.35v6.89h-3.5L295.39,613.07z M296.75,611.61l2.66,2.25v24.9h-2.66V611.61z M310.06,611.61h10.9v2.22l-4.19,0.62h-1.15 l-5.56-0.62V611.61z M314.78,611.61h2.66v27.23l-2.66-2.66V611.61z%22/%3E%3Cpath d=%22M356.14,613.83v-2.22h6.65v2.84h-0.65L356.14,613.83z M362.79,635.92v2.84h-6.65v-2.22l6-0.62H362.79z M359.32,624.42c0-4.26,0-8.55-0.12-12.81h7.19c-0.12,4.17-0.12,8.47-0.12,12.81v1.36c0,4.42,0,8.72,0.12,12.98h-7.19 c0.12-4.17,0.12-8.47,0.12-12.95V624.42z M362.79,636.38h4.91c4.73,0,7.66-4.05,7.66-11.22c0-7.27-2.93-11.18-7.58-11.18h-4.99 v-2.38h5.63c8.81,0,14.11,5.14,14.11,13.5c0,8.63-5.82,13.65-14.85,13.65h-4.89V636.38z%22/%3E%3Cpath d=%22M417.38,613.83v-2.22h13.33v2.22l-6.12,0.62h-1.21L417.38,613.83z M424.59,635.92l6.12,0.62v2.22h-13.33 v-2.22l6-0.62H424.59z M420.56,624.42c0-4.26,0-8.55-0.12-12.81h7.19c-0.12,4.17-0.12,8.47-0.12,12.81v1.5 c0,4.29,0,8.58,0.12,12.84h-7.19c0.12-4.17,0.12-8.47,0.12-12.81V624.42z%22/%3E%3Cpath d=%22M465.47,636.54l4.25-0.62h0.74l3.92,0.62v2.22h-8.91V636.54z M477.22,611.55h4.27l9.3,27.21h-7.06 l-7.05-22.19l1.55-2.09l-7.89,24.28h-2.45L477.22,611.55z M472.78,628.46h11.16l0.93,2.41h-12.78L472.78,628.46z M479.72,636.63 l4.67-0.62h2.76l5.3,0.62v2.13h-12.74V636.63z%22/%3E%3C/g%3E%3C/svg%3E";
+  function size(){var r=fm.getBoundingClientRect();W=Math.max(2,Math.round(r.width*RES));H=Math.max(2,Math.round(r.height*RES));cv.width=W;cv.height=H;
+    if(ready){mk=document.createElement('canvas');mk.width=W;mk.height=H;mk.getContext('2d').drawImage(img,0,0,W,H)}}
+  var cur=.9,target=.9,ang=0,angT=0,boost=0,amp=1,ampT=1,vis=false,last=0,t=0;
+  var B=[];for(var i=0;i<9;i++)B.push({x:Math.random(),p:Math.random(),s:.06+Math.random()*.08,r:1+Math.random()*1.6});
+  function goal(){var r=fm.getBoundingClientRect(),vh=innerHeight,k=(vh-r.top)/(vh*.55+r.height*.6);k=Math.max(0,Math.min(1,k));return .9-.43*(k*k*(3-2*k))}
+  function wave(y0,A,P,ph,fill){cx.beginPath();cx.moveTo(-W*.2,H*1.6);for(var x=-W*.2;x<=W*1.2;x+=W/40){cx.lineTo(x,y0+Math.sin(x/(P*W)*6.283+ph)*A)}cx.lineTo(W*1.2,H*1.6);cx.closePath();cx.fillStyle=fill;cx.fill()}
+  function draw(dt){if(!ready||!mk)return;t+=dt;
+    cur+=(target-cur)*.12;ang+=(angT-ang)*.12;amp+=(ampT-amp)*.08;
+    cx.globalCompositeOperation='source-over';cx.clearRect(0,0,W,H);
+    cx.fillStyle='rgba(142,216,248,.08)';cx.fillRect(0,0,W,H);
+    var y=(cur-boost)*H;cx.save();cx.translate(W/2,y);cx.rotate(ang*Math.PI/180);cx.translate(-W/2,-y);
+    var A=H*.022*amp;
+    var gb=cx.createLinearGradient(0,y-A,0,H);gb.addColorStop(0,'rgba(63,174,230,.55)');gb.addColorStop(1,'rgba(28,63,170,.55)');
+    wave(y-A*.6,A*1.2,.33,-t*.7,gb);
+    var gf=cx.createLinearGradient(0,y-A,0,H);gf.addColorStop(0,'#A6E4FC');gf.addColorStop(.12,'#5CC6F2');gf.addColorStop(.35,'#29AAE2');gf.addColorStop(1,'#1C3FAA');
+    wave(y,A,.25,t*1.05,gf);
+    cx.fillStyle='rgba(230,247,255,.8)';
+    for(var i=0;i<B.length;i++){var b=B[i];b.p+=b.s*dt;if(b.p>1){b.p=0;b.x=Math.random()}var by=H-(H-y)*b.p;if(by>y+A){cx.globalAlpha=Math.sin(b.p*3.14)*.9;cx.beginPath();cx.arc(b.x*W,by,b.r*RES*2,0,6.283);cx.fill()}}
+    cx.globalAlpha=1;cx.restore();
+    cx.globalCompositeOperation='destination-in';cx.drawImage(mk,0,0);cx.globalCompositeOperation='source-over'}
+  function loop(now){if(!vis)return;requestAnimationFrame(loop);if(now-last<33)return;var dt=Math.min(.1,(now-last)/1000||0);last=now;draw(dt)}
+  if(still){cur=target=.47;addEventListener('resize',function(){size();draw(0)});return}
+  addEventListener('resize',function(){size()});
+  if('IntersectionObserver' in window)new IntersectionObserver(function(e){var was=vis;vis=e[0].isIntersecting;if(vis){target=goal();if(!was){last=performance.now();requestAnimationFrame(loop)}}},{rootMargin:'80px'}).observe(fm);
+  else{vis=true;requestAnimationFrame(loop)}
+  addEventListener('scroll',function(){if(vis)target=goal()},{passive:true});
   var calm;
-  fm.addEventListener('pointermove',function(e){var r=fm.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5;angT=x*-7;boost=.05;fm.classList.add('stir');fm.style.setProperty('--glow',1);clearTimeout(calm);calm=setTimeout(function(){fm.classList.remove('stir')},700);kick()});
-  fm.addEventListener('pointerleave',function(){angT=0;boost=0;fm.classList.remove('stir');fm.style.setProperty('--glow',.6);kick()});
-  fm.addEventListener('pointerdown',function(){fm.classList.add('stir');boost=.09;kick();setTimeout(function(){boost=.05;kick()},400)});
-  apply();
+  fm.addEventListener('pointermove',function(e){var r=fm.getBoundingClientRect();angT=((e.clientX-r.left)/r.width-.5)*-7;boost=.05;ampT=2;fm.style.setProperty('--glow',1);clearTimeout(calm);calm=setTimeout(function(){ampT=1},700)});
+  fm.addEventListener('pointerleave',function(){angT=0;boost=0;ampT=1;fm.style.setProperty('--glow',.6)});
+  fm.addEventListener('pointerdown',function(){ampT=2.6;boost=.09;setTimeout(function(){boost=.05},400)});
 })();
