@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tyent Ionizers</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,800&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="styles.css">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+<div id="glow" aria-hidden="true"></div>
+<header id="hdr">
+  <div class="wrap nav">
+    <a class="logo" href="./" aria-label="Tyent India home"><img class="lb" src="img/logo-blue.webp" alt="Tyent India" width="600" height="219"><img class="lw" src="img/logo-white.webp" alt="Tyent India" width="600" height="219"></a>
+    <nav class="links" aria-label="Primary">
+      <a href="./">Home</a>
+      <div class="dd"><button class="dd-btn" aria-expanded="false" aria-haspopup="true">About Us <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="dd-panel"><a href="about.html#story"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 19V5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2zM8 7h6"/></svg></span><span><b>Our Story</b><small>Thirty years of ionizer engineering</small></span></a><a href="about.html#india"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span><span><b>Tyent India</b><small>The team that brings Tyent home</small></span></a><a href="about.html#values"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 21C7 17 3 13.5 3 9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 4.5-4 8-9 12z"/></svg></span><span><b>Our Values</b><small>What we promise every family</small></span></a><a href="about.html#service"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg></span><span><b>Service Network</b><small>Installation, filters and care</small></span></a></div></div>
+      <div class="dd mega"><button class="dd-btn cur" aria-expanded="false" aria-haspopup="true">Products <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="dd-panel mega-panel"><a href="products.html#ace"><span class="thumb"><img src="img/ace.webp" alt="" loading="lazy"></span><span><b>ACE-13</b><small>13 plates · touchscreen</small></span></a><a href="products.html#hybrid"><span class="thumb"><img src="img/hybrid.webp" alt="" loading="lazy"></span><span><b>H2-Hybrid</b><small>Ionizer + hydrogen water</small></span></a><a href="products.html#uce"><span class="thumb"><img src="img/uce-set2.webp" alt="" loading="lazy"></span><span><b>UCE-13 Plus</b><small>Under-counter · 4 finishes</small></span></a><a href="products.html#nmp"><span class="thumb"><img src="img/nmp9.webp" alt="" loading="lazy"></span><span><b>NMP Series</b><small>5 to 11 plates · classic</small></span></a><a href="products.html#q"><span class="thumb"><img src="img/q.webp" alt="" loading="lazy"></span><span><b>Q-Series</b><small>Eco mode · soft design</small></span></a><a href="products.html#care"><span class="thumb"><img src="img/filters.webp" alt="" loading="lazy"></span><span><b>Filters & Accessories</b><small>Filters, scale remover, soap</small></span></a><a class="all" href="products.html">Compare all ionizers <span>→</span></a></div></div>
+      <a href="why-tyent.html">Why Tyent</a><a href="why-water-ionizer.html">Why Water Ionizer</a><a href="certifications.html">Certifications</a><a href="blogs.html">Blogs</a><a href="contact.html">Contact Us</a>
+    </nav>
+    <div class="nav-r">
+      <button class="icon-btn" id="theme" aria-label="Switch to dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg></button>
+      <a class="btn btn-p mag" href="contact.html#enquire">Book a demo <span class="arr">→</span></a>
+      <button class="icon-btn burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="drawer" id="drawer" hidden>
+  <div class="dr-panel" role="dialog" aria-label="Menu">
+    <div class="dr-top"><a class="logo" href="./"><img class="lb" src="img/logo-blue.webp" alt="Tyent India" width="600" height="219"><img class="lw" src="img/logo-white.webp" alt="Tyent India" width="600" height="219"></a><button class="icon-btn dr-close" aria-label="Close menu">✕</button></div>
+    <a href="./">Home</a>
+    <div class="dr-group"><span>About Us</span><div><a href="about.html#story">Our Story</a><a href="about.html#india">Tyent India</a><a href="about.html#values">Our Values</a><a href="about.html#service">Service Network</a></div></div>
+    <div class="dr-group"><span>Products</span><div><a href="products.html#ace">ACE-13</a><a href="products.html#hybrid">H2-Hybrid</a><a href="products.html#uce">UCE-13 Plus</a><a href="products.html#nmp">NMP Series</a><a href="products.html#q">Q-Series</a><a href="products.html#care">Filters & Accessories</a></div></div>
+    <a href="why-tyent.html">Why Tyent</a><a href="why-water-ionizer.html">Why Water Ionizer</a><a href="certifications.html">Certifications</a><a href="blogs.html">Blogs</a><a href="contact.html">Contact Us</a>
+    <a class="btn btn-p" href="contact.html#enquire">Book a free home demo <span class="arr">→</span></a>
+  </div>
+</div>
+<main id="top">
+<section class="phero" aria-labelledby="ph1">
+  <div class="wrap"><div class="phero-card">
+    <div style="position:relative;z-index:1">
+      <nav class="crumb" aria-label="Breadcrumb"><a href="./">Home</a><span>/</span><span>Products</span></nav>
+      <h1 id="ph1">Five ionizers. <b>One for your kitchen.</b></h1>
+      <p class="lede">Countertop or hidden under the sink, five plates or thirteen. Compare the range, then book a water test and we will help you choose.</p>
+      <div class="jump"><a href="#ace">ACE-13</a><a href="#hybrid">H2-Hybrid</a><a href="#uce">UCE-13 Plus</a><a href="#nmp">NMP Series</a><a href="#q">Q-Series</a><a href="#care">Filters &amp; accessories</a></div>
+    </div>
+    <div class="phero-media"><img class="cut" src="img/uce-set2.webp" alt="Tyent UCE-13 Plus ionizer with its touchscreen faucet" width="968" height="801"></div>
+  </div></div>
+</section>
+
+<nav class="subnav wrap" aria-label="Product families"><div class="in" id="subnav"><span class="ind" id="ind"></span><a href="#ace">ACE-13</a><a href="#hybrid">H2-Hybrid</a><a href="#uce">UCE-13 Plus</a><a href="#nmp">NMP Series</a><a href="#q">Q-Series</a><a href="#care">Filters</a></div></nav>
+<section aria-labelledby="cmp-h" style="padding-bottom:40px">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><p class="eyebrow">At a glance</p><h2 id="cmp-h">Compare the range.</h2></div>
+      <p>Every Tyent filters, ionizes and gives you acidic, purified and alkaline water. The differences are plate count, screen, and where the machine lives.</p>
+    </div>
+    <div class="tbl-wrap rv-auto">
+      <table class="tbl">
+        <thead><tr><th scope="col">Model</th><th scope="col">Installation</th><th scope="col">Plates</th><th scope="col">Controls</th><th scope="col">Stand-out feature</th><th scope="col">Best for</th></tr></thead>
+        <tbody>
+          <tr class="hl"><th scope="row">ACE-13</th><td>Countertop</td><td>13</td><td>Colour touchscreen, jog dial</td><td>Most plates on the counter</td><td>Families who want the best on show</td></tr>
+          <tr><th scope="row">H2-Hybrid</th><td>Countertop</td><td>Hybrid cell</td><td>Illuminated dial, colour LCD</td><td>Hydrogen water mode</td><td>Hydrogen-rich drinking water</td></tr>
+          <tr><th scope="row">UCE-13 Plus</th><td>Under-counter</td><td>13</td><td>Touchscreen faucet</td><td>Four faucet finishes</td><td>Modular kitchens, clear counters</td></tr>
+          <tr><th scope="row">NMP Series</th><td>Countertop</td><td>5, 7, 9 or 11</td><td>Wide LCD, start button</td><td>Choose your plate count</td><td>Matching size to household</td></tr>
+          <tr><th scope="row">Q-Series</th><td>Countertop</td><td>Ask our team</td><td>Soft-touch panel</td><td>Eco mode</td><td>Simple, energy-saving use</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:.8rem;color:var(--muted);margin-top:14px">Specifications are indicative and will be confirmed by Tyent India. Ask for current prices during your home demo.</p>
+  </div>
+</section>
+
+<div id="fams"></div>
+
+<section id="care" class="pfam" aria-labelledby="care-h">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><p class="eyebrow">Filters &amp; accessories</p><h2 id="care-h">Keep every glass as good as the first.</h2></div>
+      <p>Genuine Tyent filters and care products, delivered to your door when your machine says it is time.</p>
+    </div>
+    <div class="care">
+      <article class="ccard big">
+        <div class="im"><img src="img/filters.webp" alt="Tyent stage 1 and stage 2 replacement filters" width="447" height="905"></div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <h3>Two-stage replacement filters</h3>
+          <p>Stage 1 carbon and stage 2 ultra-filtration cartridges, matched to your model. Your display tracks litres and reminds you when to change them.</p>
+          <a class="btn btn-g" href="contact.html#enquire" style="align-self:flex-start">Order filters</a>
+        </div>
+      </article>
+      <article class="ccard"><h3>Tyent Scale Remover</h3><p>Guards the plates and pipes against calcium build-up in hard-water cities.</p><div class="im"><img src="img/scale.webp" alt="Tyent Scale Remover unit" width="1000" height="563"></div></article>
+      <article class="ccard"><h3>TM-X Beauty Soap</h3><p>A fermentation soap made to pair with acidic water in your skincare routine.</p><div class="im"><img src="img/soap.webp" alt="TM-X fermentation beauty soap" width="1000" height="706"></div></article>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0"><div class="wrap"><div class="band">
+  <div><h2>Taste it in your own kitchen first.</h2><p>Book a free home demonstration. A Tyent specialist will test your water and show you every setting.</p></div>
+  <a class="btn mag" href="contact.html#enquire">Book a free home demo →</a>
+</div></div></section>
+</main>
+<footer>
+  <canvas class="fwave" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="foot">
+      <div><a class="logo" href="./"><img class="lb" src="img/logo-blue.webp" alt="Tyent India" width="600" height="219"><img class="lw" src="img/logo-white.webp" alt="Tyent India" width="600" height="219"></a><p class="tag-line">Better water.<br>A healthier tomorrow.</p><p style="margin-top:14px;max-width:34ch;font-size:.92rem;color:rgba(201,215,230,.7)">Water ionizers for Indian homes, with installation and service nationwide.</p></div>
+      <div><h4>Quick links</h4><ul><li><a href="./">Home</a></li><li><a href="about.html">About Us</a></li><li><a href="why-tyent.html">Why Tyent</a></li><li><a href="why-water-ionizer.html">Why Water Ionizer</a></li><li><a href="certifications.html">Certifications</a></li><li><a href="blogs.html">Blogs</a></li></ul></div>
+      <div><h4>Products</h4><ul><li><a href="products.html#ace">ACE-13</a></li><li><a href="products.html#hybrid">H2-Hybrid</a></li><li><a href="products.html#uce">UCE-13 Plus</a></li><li><a href="products.html#nmp">NMP Series</a></li><li><a href="products.html#q">Q-Series</a></li><li><a href="products.html#care">Filters & Accessories</a></li></ul></div>
+      <div class="fc"><h4>Contact us</h4><ul><li><span class="todo">Phone number to be added</span></li><li><span class="todo">Email to be added</span></li><li><span class="todo">Office address to be added</span></li><li><a href="contact.html#enquire">Book a free demo →</a></li></ul></div>
+    </div>
+    <div class="giant" aria-hidden="true">tyent</div>
+    <div class="legal"><span>Redesign concept for tyent.co.in</span><span>Specifications and certifications to be confirmed by Tyent India before launch.</span></div>
+  </div>
+</footer>
+<script>
+(function(){
+  var still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fams=[
+    {id:'ace',name:'ACE-13',tags:['Countertop','Flagship'],head:'Every water, one touch away.',
+     d:'The ACE-13 puts thirteen plates and a full-colour touchscreen on your counter. Turn the jog dial or tap the screen, and the machine shows the pH before you pour.',
+     spec:[['Installation','Countertop'],['Plates','13 platinum-coated titanium'],['Controls','Colour touchscreen and jog dial'],['Water types','7, from acidic to turbo'],['Filtration','Two-stage filters']],
+     g:[['ace','ACE-13 three-quarter view',1],['ace-front','ACE-13 front',1],['ace-touch','Touchscreen in use',0],['ace-jog','Jog dial',0],['ace-screens','Screen menus',0],['life-baby','Measured quantity for a baby bottle',0],['life-turbo','Turbo water for vegetables',0],['life-alkali','Alkaline water after a workout',0]]},
+    {id:'hybrid',name:'H2-Hybrid',tags:['Countertop','Hydrogen'],head:'An ionizer and a hydrogen generator in one.',
+     d:'Switch between ionized water for the kitchen and hydrogen-rich water for drinking. An illuminated dial and colour LCD make every setting easy to read.',
+     spec:[['Installation','Countertop'],['Cell','Hybrid ionizing and hydrogen cell'],['Controls','Illuminated dial and colour LCD'],['Modes','Ionized and H₂ water'],['Power','Hybrid power supply']],
+     g:[['hybrid','H2-Hybrid front',1],['hybrid-dial','Hydrogen dial',0],['hybrid-close','Side profile',0],['cell','The water cell',1],['life-sleep','Morning glass',0],['life-dog','Water for the dog',0],['life-mom','At home with family',0],['life-water','Drinking at home',0]]},
+    {id:'uce',name:'UCE-13 Plus',tags:['Under-counter','4 finishes'],head:'Hidden below. Only the faucet shows.',
+     d:'The ionizer fits inside your cabinet. Above the sink you get a slim faucet with its own touchscreen, in Satin Silver, Matte Black, Gold or Antique.',
+     spec:[['Installation','Under-counter with faucet'],['Plates','13 platinum-coated titanium'],['Controls','Touchscreen on the faucet'],['Finishes','Satin Silver, Matte Black, Gold, Antique'],['Counter space','Only the faucet']],
+     fin:[['Satin Silver','#C9CDD3','f-silver'],['Matte Black','#1B1D21','f-black'],['Gold','#C9A85E','f-gold'],['Antique','#7A5A48','f-antique']],
+     g:[['uce-set2','Ionizer with faucet',1],['uce-set','Satin silver set',1],['uce-touch','Faucet touchscreen',1],['uce-gold-situ','Gold faucet on marble',0],['uce-outlet','Black faucet pouring',0],['uce-box','Ionizer unit',1],['life-acidic','Acidic water for skin',0],['life-q2','Rinsing with acidic water',0]]},
+    {id:'nmp',name:'NMP Series',tags:['Countertop','5–11 plates'],head:'The everyday Tyent, sized to your family.',
+     d:'Choose five, seven, nine or eleven plates depending on how many people drink from it. A wide LCD shows your setting, and an illuminated button starts the flow.',
+     spec:[['Installation','Countertop'],['Plates','5, 7, 9 or 11'],['Controls','Wide LCD and illuminated button'],['Power','Eco mode'],['Best for','Matching size to household']],
+     g:[['nmp9','NMP-9',1],['nmp57','NMP-5 and NMP-7',1],['edge-angle','Angled view',0],['edge-screen','LCD close-up',0],['life-edge','In the kitchen',0],['life-turbo','Washing vegetables',0],['life-sleep','First glass of the day',0],['life-dog','For pets too',0]]},
+    {id:'q',name:'Q-Series',tags:['Countertop','Eco'],head:'Soft lines. Simple settings.',
+     d:'A rounded, compact design with colour-coded water settings the whole family can read at a glance, and an eco mode that saves power between pours.',
+     spec:[['Installation','Countertop'],['Controls','Soft-touch panel'],['Settings','Colour-coded water types'],['Power','Eco mode'],['Design','Compact, rounded body']],
+     g:[['q','Q-Series with eco mode',1],['q-front','Front view',0],['q-screens','Water settings',1],['life-q1','Everyday use',0],['life-q2','Acidic face wash',0],['life-water','A glass at home',0],['life-alkali','After a workout',0],['life-acidic','Fresh face',0]]}
+  ];
+  var host=document.getElementById('fams');
+  host.outerHTML=fams.map(function(f,i){
+    var flip=i%2?' flip':'';
+    var gal=f.g.slice(0,4).map(function(g,j){return '<button aria-pressed="'+(j===0)+'" data-src="'+g[0]+'" data-cut="'+g[2]+'" aria-label="'+g[1]+'"><img src="img/'+g[0]+'.webp" alt="" loading="lazy"></button>'}).join('');
+    var fin=f.fin?'<div class="sws" role="group" aria-label="Faucet finish">'+f.fin.map(function(s,j){return '<button class="sw" aria-pressed="'+(j===0)+'" aria-label="'+s[0]+'" data-n="'+s[0]+'" data-src="'+s[2]+'" style="background:'+s[1]+'"></button>'}).join('')+'<span class="fname">'+f.fin[0][0]+'</span></div>':'';
+    return '<section id="'+f.id+'" class="pfam" aria-labelledby="'+f.id+'-h"><div class="wrap two'+flip+'">'+
+      '<div><div class="frame cut gal-wrap" style="aspect-ratio:1.15"><img class="gal-main" src="img/'+f.g[0][0]+'.webp" alt="Tyent '+f.name+', '+f.g[0][1]+'"></div><div class="gal">'+gal+'</div></div>'+
+      '<div><div class="fam-top">'+f.tags.map(function(t,j){return '<span class="tagx'+(j===0?' blue':'')+'">'+t+'</span>'}).join('')+'</div>'+
+      '<h2 class="h2" id="'+f.id+'-h" style="font-size:clamp(2.6rem,5.4vw,4.6rem)">'+f.name+'</h2><p style="font-family:var(--f-display);font-size:1.4rem;letter-spacing:-.02em;margin-top:10px">'+f.head+'</p>'+
+      '<p class="body">'+f.d+'</p>'+fin+
+      '<dl class="spec">'+f.spec.map(function(s){return '<dt>'+s[0]+'</dt><dd>'+s[1]+'</dd>'}).join('')+'</dl>'+
+      '<div style="display:flex;gap:12px;margin-top:28px;flex-wrap:wrap"><a class="btn btn-p" href="contact.html#enquire">Get price &amp; demo <span class="arr">→</span></a><a class="btn btn-g" href="why-tyent.html">Why Tyent</a></div></div>'+
+      '</div></section>';
+  }).join('');
+
+  document.querySelectorAll('.pfam').forEach(function(sec){
+    var main=sec.querySelector('.gal-main');if(!main)return;var wrap=sec.querySelector('.gal-wrap');var name=sec.querySelector('h2').textContent;
+    function show(src,cut,label){main.style.opacity=0;setTimeout(function(){main.src='img/'+src+'.webp';main.alt='Tyent '+name+', '+label;
+      wrap.style.padding=cut?'':'0';main.style.maxWidth=cut?'':'100%';main.style.maxHeight=cut?'':'none';main.style.width=cut?'':'100%';main.style.height=cut?'':'100%';main.style.objectFit=cut?'contain':'cover';main.style.filter=cut?'':'none';main.style.opacity=1},still?0:220)}
+    var btns=[].slice.call(sec.querySelectorAll('.gal button'));
+    btns.forEach(function(b){b.addEventListener('click',function(){btns.forEach(function(x){x.setAttribute('aria-pressed',x===b)});show(b.dataset.src,b.dataset.cut==='1',b.getAttribute('aria-label'))})});
+    var sws=[].slice.call(sec.querySelectorAll('.sw'));
+    sws.forEach(function(s){s.addEventListener('click',function(){sws.forEach(function(x){x.setAttribute('aria-pressed',x===s)});sec.querySelector('.fname').textContent=s.dataset.n;btns.forEach(function(x){x.setAttribute('aria-pressed','false')});show(s.dataset.src,false,s.dataset.n+' faucet')})});
+  });
+  /* sticky family nav follows the scroll */
+  var sn=document.getElementById('subnav'),ind=document.getElementById('ind'),links=[].slice.call(sn.querySelectorAll('a'));
+  function spy(){var cur=null;links.forEach(function(a){var t=document.getElementById(a.getAttribute('href').slice(1));if(t&&t.getBoundingClientRect().top<innerHeight*.45)cur=a});
+    links.forEach(function(a){a.classList.toggle('on',a===cur)});
+    if(cur){ind.style.opacity=1;ind.style.left=cur.offsetLeft+'px';ind.style.width=cur.offsetWidth+'px';if(sn.scrollWidth>sn.clientWidth)sn.scrollTo({left:cur.offsetLeft-40,behavior:'smooth'})}else ind.style.opacity=0}
+  addEventListener('scroll',spy,{passive:true});addEventListener('resize',spy);spy();
+  if(location.hash){var t=document.getElementById(location.hash.slice(1));if(t)setTimeout(function(){t.scrollIntoView()},60)}
+})();
+
+</script>
+<script src="site.js"></script>
+</body>
+</html>
